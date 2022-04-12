@@ -20,6 +20,8 @@ abstract class NakamaBaseClient {
 
   NakamaBaseClient();
 
+  Future<String> getMatch();
+
   Future<model.Session> authenticateEmail({
     required String email,
     required String password,

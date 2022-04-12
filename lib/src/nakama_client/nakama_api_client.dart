@@ -95,6 +95,20 @@ class NakamaRestApiClient extends NakamaBaseClient {
   Apigrpc get _api => _chopperClient.getService<Apigrpc>();
 
   @override
+  Future<String> getMatch() async {
+    final res = await _api.matchCreate();
+
+    if (res.body == null) {
+      throw Exception('Authentication failed.');
+    }
+
+    final data = res.body!;
+    final matchId = json.decode(data.payload ?? '')['matchId'];
+
+    return matchId;
+  }
+
+  @override
   Future<model.Session> authenticateEmail({
     required String email,
     required String password,

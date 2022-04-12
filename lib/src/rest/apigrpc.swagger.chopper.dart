@@ -24,6 +24,13 @@ class _$Apigrpc extends Apigrpc {
   }
 
   @override
+  Future<Response<GetMatch>> matchCreate() {
+    final $url = '/v2/rpc/match/create';
+    final $request = Request('GET', $url, client.baseUrl);
+    return client.send<GetMatch, GetMatch>($request);
+  }
+
+  @override
   Future<Response<ApiAccount>> nakamaGetAccount() {
     final $url = '/v2/account';
     final $request = Request('GET', $url, client.baseUrl);

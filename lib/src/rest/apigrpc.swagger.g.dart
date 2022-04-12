@@ -6,6 +6,16 @@ part of 'apigrpc.swagger.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+GetMatch _$GetMatchFromJson(Map<String, dynamic> json) {
+  return GetMatch(
+    payload: json['payload'] as String?,
+  );
+}
+
+Map<String, dynamic> _$GetMatchToJson(GetMatch instance) => <String, dynamic>{
+      'payload': instance.payload,
+    };
+
 GroupUserListGroupUser _$GroupUserListGroupUserFromJson(
     Map<String, dynamic> json) {
   return GroupUserListGroupUser(

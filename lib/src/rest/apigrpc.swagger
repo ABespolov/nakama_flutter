@@ -43,6 +43,29 @@
         ]
       }
     },
+    "/v2/rpc/match/create": {
+      "get": {
+        "summary": "Get match Id.",
+        "operationId": "match/create",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/getMatch"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "custom_routes"
+        ]
+      }
+    },
     "/v2/account": {
       "get": {
         "summary": "Fetch the current user's account.",
@@ -3248,6 +3271,16 @@
     }
   },
   "definitions": {
+    "getMatch": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "string",
+          "description": "Match Id"
+        }
+      },
+      "description": "A single user-role pair."
+    },
     "GroupUserListGroupUser": {
       "type": "object",
       "properties": {

@@ -1,5 +1,7 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:collection/collection.dart';
+
 import 'package:chopper/chopper.dart';
 import 'package:chopper/chopper.dart' as chopper;
 import 'apigrpc.enums.swagger.dart' as enums;
@@ -30,6 +32,11 @@ abstract class Apigrpc extends ChopperService {
 
   @Get(path: '/healthcheck')
   Future<chopper.Response> nakamaHealthcheck();
+
+  ///Get match Id.
+
+  @Get(path: '/v2/rpc/match/create')
+  Future<chopper.Response<GetMatch>> matchCreate();
 
   ///Fetch the current user's account.
 
@@ -769,6 +776,7 @@ abstract class Apigrpc extends ChopperService {
 
 final Map<Type, Object Function(Map<String, dynamic>)>
     ApigrpcJsonDecoderMappings = {
+  GetMatch: GetMatch.fromJsonFactory,
   GroupUserListGroupUser: GroupUserListGroupUser.fromJsonFactory,
   UserGroupListUserGroup: UserGroupListUserGroup.fromJsonFactory,
   WriteLeaderboardRecordRequestLeaderboardRecordWrite:
@@ -838,6 +846,36 @@ final Map<Type, Object Function(Map<String, dynamic>)>
 };
 
 @JsonSerializable(explicitToJson: true)
+class GetMatch {
+  GetMatch({
+    this.payload,
+  });
+
+  factory GetMatch.fromJson(Map<String, dynamic> json) =>
+      _$GetMatchFromJson(json);
+
+  @JsonKey(name: 'payload', includeIfNull: true)
+  final String? payload;
+  static const fromJsonFactory = _$GetMatchFromJson;
+  static const toJsonFactory = _$GetMatchToJson;
+  Map<String, dynamic> toJson() => _$GetMatchToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is GetMatch &&
+            (identical(other.payload, payload) ||
+                const DeepCollectionEquality().equals(other.payload, payload)));
+  }
+}
+
+extension $GetMatchExtension on GetMatch {
+  GetMatch copyWith({String? payload}) {
+    return GetMatch(payload: payload ?? this.payload);
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
 class GroupUserListGroupUser {
   GroupUserListGroupUser({
     this.user,
@@ -854,6 +892,16 @@ class GroupUserListGroupUser {
   static const fromJsonFactory = _$GroupUserListGroupUserFromJson;
   static const toJsonFactory = _$GroupUserListGroupUserToJson;
   Map<String, dynamic> toJson() => _$GroupUserListGroupUserToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is GroupUserListGroupUser &&
+            (identical(other.user, user) ||
+                const DeepCollectionEquality().equals(other.user, user)) &&
+            (identical(other.state, state) ||
+                const DeepCollectionEquality().equals(other.state, state)));
+  }
 }
 
 extension $GroupUserListGroupUserExtension on GroupUserListGroupUser {
@@ -880,6 +928,16 @@ class UserGroupListUserGroup {
   static const fromJsonFactory = _$UserGroupListUserGroupFromJson;
   static const toJsonFactory = _$UserGroupListUserGroupToJson;
   Map<String, dynamic> toJson() => _$UserGroupListUserGroupToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is UserGroupListUserGroup &&
+            (identical(other.group, group) ||
+                const DeepCollectionEquality().equals(other.group, group)) &&
+            (identical(other.state, state) ||
+                const DeepCollectionEquality().equals(other.state, state)));
+  }
 }
 
 extension $UserGroupListUserGroupExtension on UserGroupListUserGroup {
@@ -920,6 +978,23 @@ class WriteLeaderboardRecordRequestLeaderboardRecordWrite {
       _$WriteLeaderboardRecordRequestLeaderboardRecordWriteToJson;
   Map<String, dynamic> toJson() =>
       _$WriteLeaderboardRecordRequestLeaderboardRecordWriteToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is WriteLeaderboardRecordRequestLeaderboardRecordWrite &&
+            (identical(other.score, score) ||
+                const DeepCollectionEquality().equals(other.score, score)) &&
+            (identical(other.subscore, subscore) ||
+                const DeepCollectionEquality()
+                    .equals(other.subscore, subscore)) &&
+            (identical(other.metadata, metadata) ||
+                const DeepCollectionEquality()
+                    .equals(other.metadata, metadata)) &&
+            (identical(other.$operator, $operator) ||
+                const DeepCollectionEquality()
+                    .equals(other.$operator, $operator)));
+  }
 }
 
 extension $WriteLeaderboardRecordRequestLeaderboardRecordWriteExtension
@@ -968,6 +1043,23 @@ class WriteTournamentRecordRequestTournamentRecordWrite {
       _$WriteTournamentRecordRequestTournamentRecordWriteToJson;
   Map<String, dynamic> toJson() =>
       _$WriteTournamentRecordRequestTournamentRecordWriteToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is WriteTournamentRecordRequestTournamentRecordWrite &&
+            (identical(other.score, score) ||
+                const DeepCollectionEquality().equals(other.score, score)) &&
+            (identical(other.subscore, subscore) ||
+                const DeepCollectionEquality()
+                    .equals(other.subscore, subscore)) &&
+            (identical(other.metadata, metadata) ||
+                const DeepCollectionEquality()
+                    .equals(other.metadata, metadata)) &&
+            (identical(other.$operator, $operator) ||
+                const DeepCollectionEquality()
+                    .equals(other.$operator, $operator)));
+  }
 }
 
 extension $WriteTournamentRecordRequestTournamentRecordWriteExtension
@@ -1018,6 +1110,30 @@ class ApiAccount {
   static const fromJsonFactory = _$ApiAccountFromJson;
   static const toJsonFactory = _$ApiAccountToJson;
   Map<String, dynamic> toJson() => _$ApiAccountToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiAccount &&
+            (identical(other.user, user) ||
+                const DeepCollectionEquality().equals(other.user, user)) &&
+            (identical(other.wallet, wallet) ||
+                const DeepCollectionEquality().equals(other.wallet, wallet)) &&
+            (identical(other.email, email) ||
+                const DeepCollectionEquality().equals(other.email, email)) &&
+            (identical(other.devices, devices) ||
+                const DeepCollectionEquality()
+                    .equals(other.devices, devices)) &&
+            (identical(other.customId, customId) ||
+                const DeepCollectionEquality()
+                    .equals(other.customId, customId)) &&
+            (identical(other.verifyTime, verifyTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.verifyTime, verifyTime)) &&
+            (identical(other.disableTime, disableTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.disableTime, disableTime)));
+  }
 }
 
 extension $ApiAccountExtension on ApiAccount {
@@ -1057,6 +1173,16 @@ class ApiAccountApple {
   static const fromJsonFactory = _$ApiAccountAppleFromJson;
   static const toJsonFactory = _$ApiAccountAppleToJson;
   Map<String, dynamic> toJson() => _$ApiAccountAppleToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiAccountApple &&
+            (identical(other.token, token) ||
+                const DeepCollectionEquality().equals(other.token, token)) &&
+            (identical(other.vars, vars) ||
+                const DeepCollectionEquality().equals(other.vars, vars)));
+  }
 }
 
 extension $ApiAccountAppleExtension on ApiAccountApple {
@@ -1082,6 +1208,16 @@ class ApiAccountCustom {
   static const fromJsonFactory = _$ApiAccountCustomFromJson;
   static const toJsonFactory = _$ApiAccountCustomToJson;
   Map<String, dynamic> toJson() => _$ApiAccountCustomToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiAccountCustom &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
+            (identical(other.vars, vars) ||
+                const DeepCollectionEquality().equals(other.vars, vars)));
+  }
 }
 
 extension $ApiAccountCustomExtension on ApiAccountCustom {
@@ -1107,6 +1243,16 @@ class ApiAccountDevice {
   static const fromJsonFactory = _$ApiAccountDeviceFromJson;
   static const toJsonFactory = _$ApiAccountDeviceToJson;
   Map<String, dynamic> toJson() => _$ApiAccountDeviceToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiAccountDevice &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
+            (identical(other.vars, vars) ||
+                const DeepCollectionEquality().equals(other.vars, vars)));
+  }
 }
 
 extension $ApiAccountDeviceExtension on ApiAccountDevice {
@@ -1135,6 +1281,19 @@ class ApiAccountEmail {
   static const fromJsonFactory = _$ApiAccountEmailFromJson;
   static const toJsonFactory = _$ApiAccountEmailToJson;
   Map<String, dynamic> toJson() => _$ApiAccountEmailToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiAccountEmail &&
+            (identical(other.email, email) ||
+                const DeepCollectionEquality().equals(other.email, email)) &&
+            (identical(other.password, password) ||
+                const DeepCollectionEquality()
+                    .equals(other.password, password)) &&
+            (identical(other.vars, vars) ||
+                const DeepCollectionEquality().equals(other.vars, vars)));
+  }
 }
 
 extension $ApiAccountEmailExtension on ApiAccountEmail {
@@ -1163,6 +1322,16 @@ class ApiAccountFacebook {
   static const fromJsonFactory = _$ApiAccountFacebookFromJson;
   static const toJsonFactory = _$ApiAccountFacebookToJson;
   Map<String, dynamic> toJson() => _$ApiAccountFacebookToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiAccountFacebook &&
+            (identical(other.token, token) ||
+                const DeepCollectionEquality().equals(other.token, token)) &&
+            (identical(other.vars, vars) ||
+                const DeepCollectionEquality().equals(other.vars, vars)));
+  }
 }
 
 extension $ApiAccountFacebookExtension on ApiAccountFacebook {
@@ -1189,6 +1358,17 @@ class ApiAccountFacebookInstantGame {
   static const fromJsonFactory = _$ApiAccountFacebookInstantGameFromJson;
   static const toJsonFactory = _$ApiAccountFacebookInstantGameToJson;
   Map<String, dynamic> toJson() => _$ApiAccountFacebookInstantGameToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiAccountFacebookInstantGame &&
+            (identical(other.signedPlayerInfo, signedPlayerInfo) ||
+                const DeepCollectionEquality()
+                    .equals(other.signedPlayerInfo, signedPlayerInfo)) &&
+            (identical(other.vars, vars) ||
+                const DeepCollectionEquality().equals(other.vars, vars)));
+  }
 }
 
 extension $ApiAccountFacebookInstantGameExtension
@@ -1233,6 +1413,31 @@ class ApiAccountGameCenter {
   static const fromJsonFactory = _$ApiAccountGameCenterFromJson;
   static const toJsonFactory = _$ApiAccountGameCenterToJson;
   Map<String, dynamic> toJson() => _$ApiAccountGameCenterToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiAccountGameCenter &&
+            (identical(other.playerId, playerId) ||
+                const DeepCollectionEquality()
+                    .equals(other.playerId, playerId)) &&
+            (identical(other.bundleId, bundleId) ||
+                const DeepCollectionEquality()
+                    .equals(other.bundleId, bundleId)) &&
+            (identical(other.timestampSeconds, timestampSeconds) ||
+                const DeepCollectionEquality()
+                    .equals(other.timestampSeconds, timestampSeconds)) &&
+            (identical(other.salt, salt) ||
+                const DeepCollectionEquality().equals(other.salt, salt)) &&
+            (identical(other.signature, signature) ||
+                const DeepCollectionEquality()
+                    .equals(other.signature, signature)) &&
+            (identical(other.publicKeyUrl, publicKeyUrl) ||
+                const DeepCollectionEquality()
+                    .equals(other.publicKeyUrl, publicKeyUrl)) &&
+            (identical(other.vars, vars) ||
+                const DeepCollectionEquality().equals(other.vars, vars)));
+  }
 }
 
 extension $ApiAccountGameCenterExtension on ApiAccountGameCenter {
@@ -1272,6 +1477,16 @@ class ApiAccountGoogle {
   static const fromJsonFactory = _$ApiAccountGoogleFromJson;
   static const toJsonFactory = _$ApiAccountGoogleToJson;
   Map<String, dynamic> toJson() => _$ApiAccountGoogleToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiAccountGoogle &&
+            (identical(other.token, token) ||
+                const DeepCollectionEquality().equals(other.token, token)) &&
+            (identical(other.vars, vars) ||
+                const DeepCollectionEquality().equals(other.vars, vars)));
+  }
 }
 
 extension $ApiAccountGoogleExtension on ApiAccountGoogle {
@@ -1298,6 +1513,16 @@ class ApiAccountSteam {
   static const fromJsonFactory = _$ApiAccountSteamFromJson;
   static const toJsonFactory = _$ApiAccountSteamToJson;
   Map<String, dynamic> toJson() => _$ApiAccountSteamToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiAccountSteam &&
+            (identical(other.token, token) ||
+                const DeepCollectionEquality().equals(other.token, token)) &&
+            (identical(other.vars, vars) ||
+                const DeepCollectionEquality().equals(other.vars, vars)));
+  }
 }
 
 extension $ApiAccountSteamExtension on ApiAccountSteam {
@@ -1356,6 +1581,50 @@ class ApiChannelMessage {
   static const fromJsonFactory = _$ApiChannelMessageFromJson;
   static const toJsonFactory = _$ApiChannelMessageToJson;
   Map<String, dynamic> toJson() => _$ApiChannelMessageToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiChannelMessage &&
+            (identical(other.channelId, channelId) ||
+                const DeepCollectionEquality()
+                    .equals(other.channelId, channelId)) &&
+            (identical(other.messageId, messageId) ||
+                const DeepCollectionEquality()
+                    .equals(other.messageId, messageId)) &&
+            (identical(other.code, code) ||
+                const DeepCollectionEquality().equals(other.code, code)) &&
+            (identical(other.senderId, senderId) ||
+                const DeepCollectionEquality()
+                    .equals(other.senderId, senderId)) &&
+            (identical(other.username, username) ||
+                const DeepCollectionEquality()
+                    .equals(other.username, username)) &&
+            (identical(other.content, content) ||
+                const DeepCollectionEquality()
+                    .equals(other.content, content)) &&
+            (identical(other.createTime, createTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.createTime, createTime)) &&
+            (identical(other.updateTime, updateTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.updateTime, updateTime)) &&
+            (identical(other.persistent, persistent) ||
+                const DeepCollectionEquality()
+                    .equals(other.persistent, persistent)) &&
+            (identical(other.roomName, roomName) ||
+                const DeepCollectionEquality()
+                    .equals(other.roomName, roomName)) &&
+            (identical(other.groupId, groupId) ||
+                const DeepCollectionEquality()
+                    .equals(other.groupId, groupId)) &&
+            (identical(other.userIdOne, userIdOne) ||
+                const DeepCollectionEquality()
+                    .equals(other.userIdOne, userIdOne)) &&
+            (identical(other.userIdTwo, userIdTwo) ||
+                const DeepCollectionEquality()
+                    .equals(other.userIdTwo, userIdTwo)));
+  }
 }
 
 extension $ApiChannelMessageExtension on ApiChannelMessage {
@@ -1416,6 +1685,24 @@ class ApiChannelMessageList {
   static const fromJsonFactory = _$ApiChannelMessageListFromJson;
   static const toJsonFactory = _$ApiChannelMessageListToJson;
   Map<String, dynamic> toJson() => _$ApiChannelMessageListToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiChannelMessageList &&
+            (identical(other.messages, messages) ||
+                const DeepCollectionEquality()
+                    .equals(other.messages, messages)) &&
+            (identical(other.nextCursor, nextCursor) ||
+                const DeepCollectionEquality()
+                    .equals(other.nextCursor, nextCursor)) &&
+            (identical(other.prevCursor, prevCursor) ||
+                const DeepCollectionEquality()
+                    .equals(other.prevCursor, prevCursor)) &&
+            (identical(other.cacheableCursor, cacheableCursor) ||
+                const DeepCollectionEquality()
+                    .equals(other.cacheableCursor, cacheableCursor)));
+  }
 }
 
 extension $ApiChannelMessageListExtension on ApiChannelMessageList {
@@ -1461,6 +1748,28 @@ class ApiCreateGroupRequest {
   static const fromJsonFactory = _$ApiCreateGroupRequestFromJson;
   static const toJsonFactory = _$ApiCreateGroupRequestToJson;
   Map<String, dynamic> toJson() => _$ApiCreateGroupRequestToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiCreateGroupRequest &&
+            (identical(other.name, name) ||
+                const DeepCollectionEquality().equals(other.name, name)) &&
+            (identical(other.description, description) ||
+                const DeepCollectionEquality()
+                    .equals(other.description, description)) &&
+            (identical(other.langTag, langTag) ||
+                const DeepCollectionEquality()
+                    .equals(other.langTag, langTag)) &&
+            (identical(other.avatarUrl, avatarUrl) ||
+                const DeepCollectionEquality()
+                    .equals(other.avatarUrl, avatarUrl)) &&
+            (identical(other.open, open) ||
+                const DeepCollectionEquality().equals(other.open, open)) &&
+            (identical(other.maxCount, maxCount) ||
+                const DeepCollectionEquality()
+                    .equals(other.maxCount, maxCount)));
+  }
 }
 
 extension $ApiCreateGroupRequestExtension on ApiCreateGroupRequest {
@@ -1501,6 +1810,19 @@ class ApiDeleteStorageObjectId {
   static const fromJsonFactory = _$ApiDeleteStorageObjectIdFromJson;
   static const toJsonFactory = _$ApiDeleteStorageObjectIdToJson;
   Map<String, dynamic> toJson() => _$ApiDeleteStorageObjectIdToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiDeleteStorageObjectId &&
+            (identical(other.collection, collection) ||
+                const DeepCollectionEquality()
+                    .equals(other.collection, collection)) &&
+            (identical(other.key, key) ||
+                const DeepCollectionEquality().equals(other.key, key)) &&
+            (identical(other.version, version) ||
+                const DeepCollectionEquality().equals(other.version, version)));
+  }
 }
 
 extension $ApiDeleteStorageObjectIdExtension on ApiDeleteStorageObjectId {
@@ -1530,6 +1852,15 @@ class ApiDeleteStorageObjectsRequest {
   static const fromJsonFactory = _$ApiDeleteStorageObjectsRequestFromJson;
   static const toJsonFactory = _$ApiDeleteStorageObjectsRequestToJson;
   Map<String, dynamic> toJson() => _$ApiDeleteStorageObjectsRequestToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiDeleteStorageObjectsRequest &&
+            (identical(other.objectIds, objectIds) ||
+                const DeepCollectionEquality()
+                    .equals(other.objectIds, objectIds)));
+  }
 }
 
 extension $ApiDeleteStorageObjectsRequestExtension
@@ -1564,6 +1895,23 @@ class ApiEvent {
   static const fromJsonFactory = _$ApiEventFromJson;
   static const toJsonFactory = _$ApiEventToJson;
   Map<String, dynamic> toJson() => _$ApiEventToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiEvent &&
+            (identical(other.name, name) ||
+                const DeepCollectionEquality().equals(other.name, name)) &&
+            (identical(other.properties, properties) ||
+                const DeepCollectionEquality()
+                    .equals(other.properties, properties)) &&
+            (identical(other.timestamp, timestamp) ||
+                const DeepCollectionEquality()
+                    .equals(other.timestamp, timestamp)) &&
+            (identical(other.$external, $external) ||
+                const DeepCollectionEquality()
+                    .equals(other.$external, $external)));
+  }
 }
 
 extension $ApiEventExtension on ApiEvent {
@@ -1600,6 +1948,19 @@ class ApiFriend {
   static const fromJsonFactory = _$ApiFriendFromJson;
   static const toJsonFactory = _$ApiFriendToJson;
   Map<String, dynamic> toJson() => _$ApiFriendToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiFriend &&
+            (identical(other.user, user) ||
+                const DeepCollectionEquality().equals(other.user, user)) &&
+            (identical(other.state, state) ||
+                const DeepCollectionEquality().equals(other.state, state)) &&
+            (identical(other.updateTime, updateTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.updateTime, updateTime)));
+  }
 }
 
 extension $ApiFriendExtension on ApiFriend {
@@ -1628,6 +1989,17 @@ class ApiFriendList {
   static const fromJsonFactory = _$ApiFriendListFromJson;
   static const toJsonFactory = _$ApiFriendListToJson;
   Map<String, dynamic> toJson() => _$ApiFriendListToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiFriendList &&
+            (identical(other.friends, friends) ||
+                const DeepCollectionEquality()
+                    .equals(other.friends, friends)) &&
+            (identical(other.cursor, cursor) ||
+                const DeepCollectionEquality().equals(other.cursor, cursor)));
+  }
 }
 
 extension $ApiFriendListExtension on ApiFriendList {
@@ -1684,6 +2056,45 @@ class ApiGroup {
   static const fromJsonFactory = _$ApiGroupFromJson;
   static const toJsonFactory = _$ApiGroupToJson;
   Map<String, dynamic> toJson() => _$ApiGroupToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiGroup &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
+            (identical(other.creatorId, creatorId) ||
+                const DeepCollectionEquality()
+                    .equals(other.creatorId, creatorId)) &&
+            (identical(other.name, name) ||
+                const DeepCollectionEquality().equals(other.name, name)) &&
+            (identical(other.description, description) ||
+                const DeepCollectionEquality()
+                    .equals(other.description, description)) &&
+            (identical(other.langTag, langTag) ||
+                const DeepCollectionEquality()
+                    .equals(other.langTag, langTag)) &&
+            (identical(other.metadata, metadata) ||
+                const DeepCollectionEquality()
+                    .equals(other.metadata, metadata)) &&
+            (identical(other.avatarUrl, avatarUrl) ||
+                const DeepCollectionEquality()
+                    .equals(other.avatarUrl, avatarUrl)) &&
+            (identical(other.open, open) ||
+                const DeepCollectionEquality().equals(other.open, open)) &&
+            (identical(other.edgeCount, edgeCount) ||
+                const DeepCollectionEquality()
+                    .equals(other.edgeCount, edgeCount)) &&
+            (identical(other.maxCount, maxCount) ||
+                const DeepCollectionEquality()
+                    .equals(other.maxCount, maxCount)) &&
+            (identical(other.createTime, createTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.createTime, createTime)) &&
+            (identical(other.updateTime, updateTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.updateTime, updateTime)));
+  }
 }
 
 extension $ApiGroupExtension on ApiGroup {
@@ -1733,6 +2144,16 @@ class ApiGroupList {
   static const fromJsonFactory = _$ApiGroupListFromJson;
   static const toJsonFactory = _$ApiGroupListToJson;
   Map<String, dynamic> toJson() => _$ApiGroupListToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiGroupList &&
+            (identical(other.groups, groups) ||
+                const DeepCollectionEquality().equals(other.groups, groups)) &&
+            (identical(other.cursor, cursor) ||
+                const DeepCollectionEquality().equals(other.cursor, cursor)));
+  }
 }
 
 extension $ApiGroupListExtension on ApiGroupList {
@@ -1762,6 +2183,17 @@ class ApiGroupUserList {
   static const fromJsonFactory = _$ApiGroupUserListFromJson;
   static const toJsonFactory = _$ApiGroupUserListToJson;
   Map<String, dynamic> toJson() => _$ApiGroupUserListToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiGroupUserList &&
+            (identical(other.groupUsers, groupUsers) ||
+                const DeepCollectionEquality()
+                    .equals(other.groupUsers, groupUsers)) &&
+            (identical(other.cursor, cursor) ||
+                const DeepCollectionEquality().equals(other.cursor, cursor)));
+  }
 }
 
 extension $ApiGroupUserListExtension on ApiGroupUserList {
@@ -1820,6 +2252,46 @@ class ApiLeaderboardRecord {
   static const fromJsonFactory = _$ApiLeaderboardRecordFromJson;
   static const toJsonFactory = _$ApiLeaderboardRecordToJson;
   Map<String, dynamic> toJson() => _$ApiLeaderboardRecordToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiLeaderboardRecord &&
+            (identical(other.leaderboardId, leaderboardId) ||
+                const DeepCollectionEquality()
+                    .equals(other.leaderboardId, leaderboardId)) &&
+            (identical(other.ownerId, ownerId) ||
+                const DeepCollectionEquality()
+                    .equals(other.ownerId, ownerId)) &&
+            (identical(other.username, username) ||
+                const DeepCollectionEquality()
+                    .equals(other.username, username)) &&
+            (identical(other.score, score) ||
+                const DeepCollectionEquality().equals(other.score, score)) &&
+            (identical(other.subscore, subscore) ||
+                const DeepCollectionEquality()
+                    .equals(other.subscore, subscore)) &&
+            (identical(other.numScore, numScore) ||
+                const DeepCollectionEquality()
+                    .equals(other.numScore, numScore)) &&
+            (identical(other.metadata, metadata) ||
+                const DeepCollectionEquality()
+                    .equals(other.metadata, metadata)) &&
+            (identical(other.createTime, createTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.createTime, createTime)) &&
+            (identical(other.updateTime, updateTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.updateTime, updateTime)) &&
+            (identical(other.expiryTime, expiryTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.expiryTime, expiryTime)) &&
+            (identical(other.rank, rank) ||
+                const DeepCollectionEquality().equals(other.rank, rank)) &&
+            (identical(other.maxNumScore, maxNumScore) ||
+                const DeepCollectionEquality()
+                    .equals(other.maxNumScore, maxNumScore)));
+  }
 }
 
 extension $ApiLeaderboardRecordExtension on ApiLeaderboardRecord {
@@ -1881,6 +2353,24 @@ class ApiLeaderboardRecordList {
   static const fromJsonFactory = _$ApiLeaderboardRecordListFromJson;
   static const toJsonFactory = _$ApiLeaderboardRecordListToJson;
   Map<String, dynamic> toJson() => _$ApiLeaderboardRecordListToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiLeaderboardRecordList &&
+            (identical(other.records, records) ||
+                const DeepCollectionEquality()
+                    .equals(other.records, records)) &&
+            (identical(other.ownerRecords, ownerRecords) ||
+                const DeepCollectionEquality()
+                    .equals(other.ownerRecords, ownerRecords)) &&
+            (identical(other.nextCursor, nextCursor) ||
+                const DeepCollectionEquality()
+                    .equals(other.nextCursor, nextCursor)) &&
+            (identical(other.prevCursor, prevCursor) ||
+                const DeepCollectionEquality()
+                    .equals(other.prevCursor, prevCursor)));
+  }
 }
 
 extension $ApiLeaderboardRecordListExtension on ApiLeaderboardRecordList {
@@ -1914,6 +2404,17 @@ class ApiLinkSteamRequest {
   static const fromJsonFactory = _$ApiLinkSteamRequestFromJson;
   static const toJsonFactory = _$ApiLinkSteamRequestToJson;
   Map<String, dynamic> toJson() => _$ApiLinkSteamRequestToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiLinkSteamRequest &&
+            (identical(other.account, account) ||
+                const DeepCollectionEquality()
+                    .equals(other.account, account)) &&
+            (identical(other.$sync, $sync) ||
+                const DeepCollectionEquality().equals(other.$sync, $sync)));
+  }
 }
 
 extension $ApiLinkSteamRequestExtension on ApiLinkSteamRequest {
@@ -1952,6 +2453,28 @@ class ApiMatch {
   static const fromJsonFactory = _$ApiMatchFromJson;
   static const toJsonFactory = _$ApiMatchToJson;
   Map<String, dynamic> toJson() => _$ApiMatchToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiMatch &&
+            (identical(other.matchId, matchId) ||
+                const DeepCollectionEquality()
+                    .equals(other.matchId, matchId)) &&
+            (identical(other.authoritative, authoritative) ||
+                const DeepCollectionEquality()
+                    .equals(other.authoritative, authoritative)) &&
+            (identical(other.label, label) ||
+                const DeepCollectionEquality().equals(other.label, label)) &&
+            (identical(other.size, size) ||
+                const DeepCollectionEquality().equals(other.size, size)) &&
+            (identical(other.tickRate, tickRate) ||
+                const DeepCollectionEquality()
+                    .equals(other.tickRate, tickRate)) &&
+            (identical(other.handlerName, handlerName) ||
+                const DeepCollectionEquality()
+                    .equals(other.handlerName, handlerName)));
+  }
 }
 
 extension $ApiMatchExtension on ApiMatch {
@@ -1986,6 +2509,14 @@ class ApiMatchList {
   static const fromJsonFactory = _$ApiMatchListFromJson;
   static const toJsonFactory = _$ApiMatchListToJson;
   Map<String, dynamic> toJson() => _$ApiMatchListToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiMatchList &&
+            (identical(other.matches, matches) ||
+                const DeepCollectionEquality().equals(other.matches, matches)));
+  }
 }
 
 extension $ApiMatchListExtension on ApiMatchList {
@@ -2026,6 +2557,31 @@ class ApiNotification {
   static const fromJsonFactory = _$ApiNotificationFromJson;
   static const toJsonFactory = _$ApiNotificationToJson;
   Map<String, dynamic> toJson() => _$ApiNotificationToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiNotification &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
+            (identical(other.subject, subject) ||
+                const DeepCollectionEquality()
+                    .equals(other.subject, subject)) &&
+            (identical(other.content, content) ||
+                const DeepCollectionEquality()
+                    .equals(other.content, content)) &&
+            (identical(other.code, code) ||
+                const DeepCollectionEquality().equals(other.code, code)) &&
+            (identical(other.senderId, senderId) ||
+                const DeepCollectionEquality()
+                    .equals(other.senderId, senderId)) &&
+            (identical(other.createTime, createTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.createTime, createTime)) &&
+            (identical(other.persistent, persistent) ||
+                const DeepCollectionEquality()
+                    .equals(other.persistent, persistent)));
+  }
 }
 
 extension $ApiNotificationExtension on ApiNotification {
@@ -2068,6 +2624,18 @@ class ApiNotificationList {
   static const fromJsonFactory = _$ApiNotificationListFromJson;
   static const toJsonFactory = _$ApiNotificationListToJson;
   Map<String, dynamic> toJson() => _$ApiNotificationListToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiNotificationList &&
+            (identical(other.notifications, notifications) ||
+                const DeepCollectionEquality()
+                    .equals(other.notifications, notifications)) &&
+            (identical(other.cacheableCursor, cacheableCursor) ||
+                const DeepCollectionEquality()
+                    .equals(other.cacheableCursor, cacheableCursor)));
+  }
 }
 
 extension $ApiNotificationListExtension on ApiNotificationList {
@@ -2099,6 +2667,19 @@ class ApiReadStorageObjectId {
   static const fromJsonFactory = _$ApiReadStorageObjectIdFromJson;
   static const toJsonFactory = _$ApiReadStorageObjectIdToJson;
   Map<String, dynamic> toJson() => _$ApiReadStorageObjectIdToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiReadStorageObjectId &&
+            (identical(other.collection, collection) ||
+                const DeepCollectionEquality()
+                    .equals(other.collection, collection)) &&
+            (identical(other.key, key) ||
+                const DeepCollectionEquality().equals(other.key, key)) &&
+            (identical(other.userId, userId) ||
+                const DeepCollectionEquality().equals(other.userId, userId)));
+  }
 }
 
 extension $ApiReadStorageObjectIdExtension on ApiReadStorageObjectId {
@@ -2128,6 +2709,15 @@ class ApiReadStorageObjectsRequest {
   static const fromJsonFactory = _$ApiReadStorageObjectsRequestFromJson;
   static const toJsonFactory = _$ApiReadStorageObjectsRequestToJson;
   Map<String, dynamic> toJson() => _$ApiReadStorageObjectsRequestToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiReadStorageObjectsRequest &&
+            (identical(other.objectIds, objectIds) ||
+                const DeepCollectionEquality()
+                    .equals(other.objectIds, objectIds)));
+  }
 }
 
 extension $ApiReadStorageObjectsRequestExtension
@@ -2157,6 +2747,19 @@ class ApiRpc {
   static const fromJsonFactory = _$ApiRpcFromJson;
   static const toJsonFactory = _$ApiRpcToJson;
   Map<String, dynamic> toJson() => _$ApiRpcToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiRpc &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
+            (identical(other.payload, payload) ||
+                const DeepCollectionEquality()
+                    .equals(other.payload, payload)) &&
+            (identical(other.httpKey, httpKey) ||
+                const DeepCollectionEquality().equals(other.httpKey, httpKey)));
+  }
 }
 
 extension $ApiRpcExtension on ApiRpc {
@@ -2188,6 +2791,20 @@ class ApiSession {
   static const fromJsonFactory = _$ApiSessionFromJson;
   static const toJsonFactory = _$ApiSessionToJson;
   Map<String, dynamic> toJson() => _$ApiSessionToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiSession &&
+            (identical(other.created, created) ||
+                const DeepCollectionEquality()
+                    .equals(other.created, created)) &&
+            (identical(other.token, token) ||
+                const DeepCollectionEquality().equals(other.token, token)) &&
+            (identical(other.refreshToken, refreshToken) ||
+                const DeepCollectionEquality()
+                    .equals(other.refreshToken, refreshToken)));
+  }
 }
 
 extension $ApiSessionExtension on ApiSession {
@@ -2216,6 +2833,17 @@ class ApiSessionLogoutRequest {
   static const fromJsonFactory = _$ApiSessionLogoutRequestFromJson;
   static const toJsonFactory = _$ApiSessionLogoutRequestToJson;
   Map<String, dynamic> toJson() => _$ApiSessionLogoutRequestToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiSessionLogoutRequest &&
+            (identical(other.token, token) ||
+                const DeepCollectionEquality().equals(other.token, token)) &&
+            (identical(other.refreshToken, refreshToken) ||
+                const DeepCollectionEquality()
+                    .equals(other.refreshToken, refreshToken)));
+  }
 }
 
 extension $ApiSessionLogoutRequestExtension on ApiSessionLogoutRequest {
@@ -2243,6 +2871,16 @@ class ApiSessionRefreshRequest {
   static const fromJsonFactory = _$ApiSessionRefreshRequestFromJson;
   static const toJsonFactory = _$ApiSessionRefreshRequestToJson;
   Map<String, dynamic> toJson() => _$ApiSessionRefreshRequestToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiSessionRefreshRequest &&
+            (identical(other.token, token) ||
+                const DeepCollectionEquality().equals(other.token, token)) &&
+            (identical(other.vars, vars) ||
+                const DeepCollectionEquality().equals(other.vars, vars)));
+  }
 }
 
 extension $ApiSessionRefreshRequestExtension on ApiSessionRefreshRequest {
@@ -2290,6 +2928,36 @@ class ApiStorageObject {
   static const fromJsonFactory = _$ApiStorageObjectFromJson;
   static const toJsonFactory = _$ApiStorageObjectToJson;
   Map<String, dynamic> toJson() => _$ApiStorageObjectToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiStorageObject &&
+            (identical(other.collection, collection) ||
+                const DeepCollectionEquality()
+                    .equals(other.collection, collection)) &&
+            (identical(other.key, key) ||
+                const DeepCollectionEquality().equals(other.key, key)) &&
+            (identical(other.userId, userId) ||
+                const DeepCollectionEquality().equals(other.userId, userId)) &&
+            (identical(other.value, value) ||
+                const DeepCollectionEquality().equals(other.value, value)) &&
+            (identical(other.version, version) ||
+                const DeepCollectionEquality()
+                    .equals(other.version, version)) &&
+            (identical(other.permissionRead, permissionRead) ||
+                const DeepCollectionEquality()
+                    .equals(other.permissionRead, permissionRead)) &&
+            (identical(other.permissionWrite, permissionWrite) ||
+                const DeepCollectionEquality()
+                    .equals(other.permissionWrite, permissionWrite)) &&
+            (identical(other.createTime, createTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.createTime, createTime)) &&
+            (identical(other.updateTime, updateTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.updateTime, updateTime)));
+  }
 }
 
 extension $ApiStorageObjectExtension on ApiStorageObject {
@@ -2339,6 +3007,22 @@ class ApiStorageObjectAck {
   static const fromJsonFactory = _$ApiStorageObjectAckFromJson;
   static const toJsonFactory = _$ApiStorageObjectAckToJson;
   Map<String, dynamic> toJson() => _$ApiStorageObjectAckToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiStorageObjectAck &&
+            (identical(other.collection, collection) ||
+                const DeepCollectionEquality()
+                    .equals(other.collection, collection)) &&
+            (identical(other.key, key) ||
+                const DeepCollectionEquality().equals(other.key, key)) &&
+            (identical(other.version, version) ||
+                const DeepCollectionEquality()
+                    .equals(other.version, version)) &&
+            (identical(other.userId, userId) ||
+                const DeepCollectionEquality().equals(other.userId, userId)));
+  }
 }
 
 extension $ApiStorageObjectAckExtension on ApiStorageObjectAck {
@@ -2367,6 +3051,14 @@ class ApiStorageObjectAcks {
   static const fromJsonFactory = _$ApiStorageObjectAcksFromJson;
   static const toJsonFactory = _$ApiStorageObjectAcksToJson;
   Map<String, dynamic> toJson() => _$ApiStorageObjectAcksToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiStorageObjectAcks &&
+            (identical(other.acks, acks) ||
+                const DeepCollectionEquality().equals(other.acks, acks)));
+  }
 }
 
 extension $ApiStorageObjectAcksExtension on ApiStorageObjectAcks {
@@ -2393,6 +3085,17 @@ class ApiStorageObjectList {
   static const fromJsonFactory = _$ApiStorageObjectListFromJson;
   static const toJsonFactory = _$ApiStorageObjectListToJson;
   Map<String, dynamic> toJson() => _$ApiStorageObjectListToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiStorageObjectList &&
+            (identical(other.objects, objects) ||
+                const DeepCollectionEquality()
+                    .equals(other.objects, objects)) &&
+            (identical(other.cursor, cursor) ||
+                const DeepCollectionEquality().equals(other.cursor, cursor)));
+  }
 }
 
 extension $ApiStorageObjectListExtension on ApiStorageObjectList {
@@ -2418,6 +3121,14 @@ class ApiStorageObjects {
   static const fromJsonFactory = _$ApiStorageObjectsFromJson;
   static const toJsonFactory = _$ApiStorageObjectsToJson;
   Map<String, dynamic> toJson() => _$ApiStorageObjectsToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiStorageObjects &&
+            (identical(other.objects, objects) ||
+                const DeepCollectionEquality().equals(other.objects, objects)));
+  }
 }
 
 extension $ApiStorageObjectsExtension on ApiStorageObjects {
@@ -2488,6 +3199,60 @@ class ApiTournament {
   static const fromJsonFactory = _$ApiTournamentFromJson;
   static const toJsonFactory = _$ApiTournamentToJson;
   Map<String, dynamic> toJson() => _$ApiTournamentToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiTournament &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
+            (identical(other.title, title) ||
+                const DeepCollectionEquality().equals(other.title, title)) &&
+            (identical(other.description, description) ||
+                const DeepCollectionEquality()
+                    .equals(other.description, description)) &&
+            (identical(other.category, category) ||
+                const DeepCollectionEquality()
+                    .equals(other.category, category)) &&
+            (identical(other.sortOrder, sortOrder) ||
+                const DeepCollectionEquality()
+                    .equals(other.sortOrder, sortOrder)) &&
+            (identical(other.size, size) ||
+                const DeepCollectionEquality().equals(other.size, size)) &&
+            (identical(other.maxSize, maxSize) ||
+                const DeepCollectionEquality()
+                    .equals(other.maxSize, maxSize)) &&
+            (identical(other.maxNumScore, maxNumScore) ||
+                const DeepCollectionEquality()
+                    .equals(other.maxNumScore, maxNumScore)) &&
+            (identical(other.canEnter, canEnter) ||
+                const DeepCollectionEquality()
+                    .equals(other.canEnter, canEnter)) &&
+            (identical(other.endActive, endActive) ||
+                const DeepCollectionEquality()
+                    .equals(other.endActive, endActive)) &&
+            (identical(other.nextReset, nextReset) ||
+                const DeepCollectionEquality()
+                    .equals(other.nextReset, nextReset)) &&
+            (identical(other.metadata, metadata) ||
+                const DeepCollectionEquality()
+                    .equals(other.metadata, metadata)) &&
+            (identical(other.createTime, createTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.createTime, createTime)) &&
+            (identical(other.startTime, startTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.startTime, startTime)) &&
+            (identical(other.endTime, endTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.endTime, endTime)) &&
+            (identical(other.duration, duration) ||
+                const DeepCollectionEquality()
+                    .equals(other.duration, duration)) &&
+            (identical(other.startActive, startActive) ||
+                const DeepCollectionEquality()
+                    .equals(other.startActive, startActive)));
+  }
 }
 
 extension $ApiTournamentExtension on ApiTournament {
@@ -2548,6 +3313,17 @@ class ApiTournamentList {
   static const fromJsonFactory = _$ApiTournamentListFromJson;
   static const toJsonFactory = _$ApiTournamentListToJson;
   Map<String, dynamic> toJson() => _$ApiTournamentListToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiTournamentList &&
+            (identical(other.tournaments, tournaments) ||
+                const DeepCollectionEquality()
+                    .equals(other.tournaments, tournaments)) &&
+            (identical(other.cursor, cursor) ||
+                const DeepCollectionEquality().equals(other.cursor, cursor)));
+  }
 }
 
 extension $ApiTournamentListExtension on ApiTournamentList {
@@ -2588,6 +3364,24 @@ class ApiTournamentRecordList {
   static const fromJsonFactory = _$ApiTournamentRecordListFromJson;
   static const toJsonFactory = _$ApiTournamentRecordListToJson;
   Map<String, dynamic> toJson() => _$ApiTournamentRecordListToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiTournamentRecordList &&
+            (identical(other.records, records) ||
+                const DeepCollectionEquality()
+                    .equals(other.records, records)) &&
+            (identical(other.ownerRecords, ownerRecords) ||
+                const DeepCollectionEquality()
+                    .equals(other.ownerRecords, ownerRecords)) &&
+            (identical(other.nextCursor, nextCursor) ||
+                const DeepCollectionEquality()
+                    .equals(other.nextCursor, nextCursor)) &&
+            (identical(other.prevCursor, prevCursor) ||
+                const DeepCollectionEquality()
+                    .equals(other.prevCursor, prevCursor)));
+  }
 }
 
 extension $ApiTournamentRecordListExtension on ApiTournamentRecordList {
@@ -2633,6 +3427,30 @@ class ApiUpdateAccountRequest {
   static const fromJsonFactory = _$ApiUpdateAccountRequestFromJson;
   static const toJsonFactory = _$ApiUpdateAccountRequestToJson;
   Map<String, dynamic> toJson() => _$ApiUpdateAccountRequestToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiUpdateAccountRequest &&
+            (identical(other.username, username) ||
+                const DeepCollectionEquality()
+                    .equals(other.username, username)) &&
+            (identical(other.displayName, displayName) ||
+                const DeepCollectionEquality()
+                    .equals(other.displayName, displayName)) &&
+            (identical(other.avatarUrl, avatarUrl) ||
+                const DeepCollectionEquality()
+                    .equals(other.avatarUrl, avatarUrl)) &&
+            (identical(other.langTag, langTag) ||
+                const DeepCollectionEquality()
+                    .equals(other.langTag, langTag)) &&
+            (identical(other.location, location) ||
+                const DeepCollectionEquality()
+                    .equals(other.location, location)) &&
+            (identical(other.timezone, timezone) ||
+                const DeepCollectionEquality()
+                    .equals(other.timezone, timezone)));
+  }
 }
 
 extension $ApiUpdateAccountRequestExtension on ApiUpdateAccountRequest {
@@ -2682,6 +3500,28 @@ class ApiUpdateGroupRequest {
   static const fromJsonFactory = _$ApiUpdateGroupRequestFromJson;
   static const toJsonFactory = _$ApiUpdateGroupRequestToJson;
   Map<String, dynamic> toJson() => _$ApiUpdateGroupRequestToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiUpdateGroupRequest &&
+            (identical(other.groupId, groupId) ||
+                const DeepCollectionEquality()
+                    .equals(other.groupId, groupId)) &&
+            (identical(other.name, name) ||
+                const DeepCollectionEquality().equals(other.name, name)) &&
+            (identical(other.description, description) ||
+                const DeepCollectionEquality()
+                    .equals(other.description, description)) &&
+            (identical(other.langTag, langTag) ||
+                const DeepCollectionEquality()
+                    .equals(other.langTag, langTag)) &&
+            (identical(other.avatarUrl, avatarUrl) ||
+                const DeepCollectionEquality()
+                    .equals(other.avatarUrl, avatarUrl)) &&
+            (identical(other.open, open) ||
+                const DeepCollectionEquality().equals(other.open, open)));
+  }
 }
 
 extension $ApiUpdateGroupRequestExtension on ApiUpdateGroupRequest {
@@ -2767,6 +3607,63 @@ class ApiUser {
   static const fromJsonFactory = _$ApiUserFromJson;
   static const toJsonFactory = _$ApiUserToJson;
   Map<String, dynamic> toJson() => _$ApiUserToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiUser &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
+            (identical(other.username, username) ||
+                const DeepCollectionEquality()
+                    .equals(other.username, username)) &&
+            (identical(other.displayName, displayName) ||
+                const DeepCollectionEquality()
+                    .equals(other.displayName, displayName)) &&
+            (identical(other.avatarUrl, avatarUrl) ||
+                const DeepCollectionEquality()
+                    .equals(other.avatarUrl, avatarUrl)) &&
+            (identical(other.langTag, langTag) ||
+                const DeepCollectionEquality()
+                    .equals(other.langTag, langTag)) &&
+            (identical(other.location, location) ||
+                const DeepCollectionEquality()
+                    .equals(other.location, location)) &&
+            (identical(other.timezone, timezone) ||
+                const DeepCollectionEquality()
+                    .equals(other.timezone, timezone)) &&
+            (identical(other.metadata, metadata) ||
+                const DeepCollectionEquality()
+                    .equals(other.metadata, metadata)) &&
+            (identical(other.facebookId, facebookId) ||
+                const DeepCollectionEquality()
+                    .equals(other.facebookId, facebookId)) &&
+            (identical(other.googleId, googleId) ||
+                const DeepCollectionEquality()
+                    .equals(other.googleId, googleId)) &&
+            (identical(other.gamecenterId, gamecenterId) ||
+                const DeepCollectionEquality()
+                    .equals(other.gamecenterId, gamecenterId)) &&
+            (identical(other.steamId, steamId) ||
+                const DeepCollectionEquality()
+                    .equals(other.steamId, steamId)) &&
+            (identical(other.online, online) ||
+                const DeepCollectionEquality().equals(other.online, online)) &&
+            (identical(other.edgeCount, edgeCount) ||
+                const DeepCollectionEquality()
+                    .equals(other.edgeCount, edgeCount)) &&
+            (identical(other.createTime, createTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.createTime, createTime)) &&
+            (identical(other.updateTime, updateTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.updateTime, updateTime)) &&
+            (identical(other.facebookInstantGameId, facebookInstantGameId) ||
+                const DeepCollectionEquality().equals(
+                    other.facebookInstantGameId, facebookInstantGameId)) &&
+            (identical(other.appleId, appleId) ||
+                const DeepCollectionEquality().equals(other.appleId, appleId)));
+  }
 }
 
 extension $ApiUserExtension on ApiUser {
@@ -2832,6 +3729,17 @@ class ApiUserGroupList {
   static const fromJsonFactory = _$ApiUserGroupListFromJson;
   static const toJsonFactory = _$ApiUserGroupListToJson;
   Map<String, dynamic> toJson() => _$ApiUserGroupListToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiUserGroupList &&
+            (identical(other.userGroups, userGroups) ||
+                const DeepCollectionEquality()
+                    .equals(other.userGroups, userGroups)) &&
+            (identical(other.cursor, cursor) ||
+                const DeepCollectionEquality().equals(other.cursor, cursor)));
+  }
 }
 
 extension $ApiUserGroupListExtension on ApiUserGroupList {
@@ -2857,6 +3765,14 @@ class ApiUsers {
   static const fromJsonFactory = _$ApiUsersFromJson;
   static const toJsonFactory = _$ApiUsersToJson;
   Map<String, dynamic> toJson() => _$ApiUsersToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiUsers &&
+            (identical(other.users, users) ||
+                const DeepCollectionEquality().equals(other.users, users)));
+  }
 }
 
 extension $ApiUsersExtension on ApiUsers {
@@ -2880,6 +3796,14 @@ class ApiValidatePurchaseAppleRequest {
   static const toJsonFactory = _$ApiValidatePurchaseAppleRequestToJson;
   Map<String, dynamic> toJson() =>
       _$ApiValidatePurchaseAppleRequestToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiValidatePurchaseAppleRequest &&
+            (identical(other.receipt, receipt) ||
+                const DeepCollectionEquality().equals(other.receipt, receipt)));
+  }
 }
 
 extension $ApiValidatePurchaseAppleRequestExtension
@@ -2905,6 +3829,15 @@ class ApiValidatePurchaseGoogleRequest {
   static const toJsonFactory = _$ApiValidatePurchaseGoogleRequestToJson;
   Map<String, dynamic> toJson() =>
       _$ApiValidatePurchaseGoogleRequestToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiValidatePurchaseGoogleRequest &&
+            (identical(other.purchase, purchase) ||
+                const DeepCollectionEquality()
+                    .equals(other.purchase, purchase)));
+  }
 }
 
 extension $ApiValidatePurchaseGoogleRequestExtension
@@ -2934,6 +3867,18 @@ class ApiValidatePurchaseHuaweiRequest {
   static const toJsonFactory = _$ApiValidatePurchaseHuaweiRequestToJson;
   Map<String, dynamic> toJson() =>
       _$ApiValidatePurchaseHuaweiRequestToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiValidatePurchaseHuaweiRequest &&
+            (identical(other.purchase, purchase) ||
+                const DeepCollectionEquality()
+                    .equals(other.purchase, purchase)) &&
+            (identical(other.signature, signature) ||
+                const DeepCollectionEquality()
+                    .equals(other.signature, signature)));
+  }
 }
 
 extension $ApiValidatePurchaseHuaweiRequestExtension
@@ -2963,6 +3908,15 @@ class ApiValidatePurchaseResponse {
   static const fromJsonFactory = _$ApiValidatePurchaseResponseFromJson;
   static const toJsonFactory = _$ApiValidatePurchaseResponseToJson;
   Map<String, dynamic> toJson() => _$ApiValidatePurchaseResponseToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiValidatePurchaseResponse &&
+            (identical(other.validatedPurchases, validatedPurchases) ||
+                const DeepCollectionEquality()
+                    .equals(other.validatedPurchases, validatedPurchases)));
+  }
 }
 
 extension $ApiValidatePurchaseResponseExtension on ApiValidatePurchaseResponse {
@@ -3016,6 +3970,35 @@ class ApiValidatedPurchase {
   static const fromJsonFactory = _$ApiValidatedPurchaseFromJson;
   static const toJsonFactory = _$ApiValidatedPurchaseToJson;
   Map<String, dynamic> toJson() => _$ApiValidatedPurchaseToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiValidatedPurchase &&
+            (identical(other.productId, productId) ||
+                const DeepCollectionEquality()
+                    .equals(other.productId, productId)) &&
+            (identical(other.transactionId, transactionId) ||
+                const DeepCollectionEquality()
+                    .equals(other.transactionId, transactionId)) &&
+            (identical(other.store, store) ||
+                const DeepCollectionEquality().equals(other.store, store)) &&
+            (identical(other.purchaseTime, purchaseTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.purchaseTime, purchaseTime)) &&
+            (identical(other.createTime, createTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.createTime, createTime)) &&
+            (identical(other.updateTime, updateTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.updateTime, updateTime)) &&
+            (identical(other.providerResponse, providerResponse) ||
+                const DeepCollectionEquality()
+                    .equals(other.providerResponse, providerResponse)) &&
+            (identical(other.environment, environment) ||
+                const DeepCollectionEquality()
+                    .equals(other.environment, environment)));
+  }
 }
 
 extension $ApiValidatedPurchaseExtension on ApiValidatedPurchase {
@@ -3069,6 +4052,28 @@ class ApiWriteStorageObject {
   static const fromJsonFactory = _$ApiWriteStorageObjectFromJson;
   static const toJsonFactory = _$ApiWriteStorageObjectToJson;
   Map<String, dynamic> toJson() => _$ApiWriteStorageObjectToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiWriteStorageObject &&
+            (identical(other.collection, collection) ||
+                const DeepCollectionEquality()
+                    .equals(other.collection, collection)) &&
+            (identical(other.key, key) ||
+                const DeepCollectionEquality().equals(other.key, key)) &&
+            (identical(other.value, value) ||
+                const DeepCollectionEquality().equals(other.value, value)) &&
+            (identical(other.version, version) ||
+                const DeepCollectionEquality()
+                    .equals(other.version, version)) &&
+            (identical(other.permissionRead, permissionRead) ||
+                const DeepCollectionEquality()
+                    .equals(other.permissionRead, permissionRead)) &&
+            (identical(other.permissionWrite, permissionWrite) ||
+                const DeepCollectionEquality()
+                    .equals(other.permissionWrite, permissionWrite)));
+  }
 }
 
 extension $ApiWriteStorageObjectExtension on ApiWriteStorageObject {
@@ -3106,6 +4111,14 @@ class ApiWriteStorageObjectsRequest {
   static const fromJsonFactory = _$ApiWriteStorageObjectsRequestFromJson;
   static const toJsonFactory = _$ApiWriteStorageObjectsRequestToJson;
   Map<String, dynamic> toJson() => _$ApiWriteStorageObjectsRequestToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiWriteStorageObjectsRequest &&
+            (identical(other.objects, objects) ||
+                const DeepCollectionEquality().equals(other.objects, objects)));
+  }
 }
 
 extension $ApiWriteStorageObjectsRequestExtension
@@ -3133,6 +4146,17 @@ class ProtobufAny {
   static const fromJsonFactory = _$ProtobufAnyFromJson;
   static const toJsonFactory = _$ProtobufAnyToJson;
   Map<String, dynamic> toJson() => _$ProtobufAnyToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ProtobufAny &&
+            (identical(other.typeUrl, typeUrl) ||
+                const DeepCollectionEquality()
+                    .equals(other.typeUrl, typeUrl)) &&
+            (identical(other.value, value) ||
+                const DeepCollectionEquality().equals(other.value, value)));
+  }
 }
 
 extension $ProtobufAnyExtension on ProtobufAny {
@@ -3162,6 +4186,19 @@ class RpcStatus {
   static const fromJsonFactory = _$RpcStatusFromJson;
   static const toJsonFactory = _$RpcStatusToJson;
   Map<String, dynamic> toJson() => _$RpcStatusToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is RpcStatus &&
+            (identical(other.code, code) ||
+                const DeepCollectionEquality().equals(other.code, code)) &&
+            (identical(other.message, message) ||
+                const DeepCollectionEquality()
+                    .equals(other.message, message)) &&
+            (identical(other.details, details) ||
+                const DeepCollectionEquality().equals(other.details, details)));
+  }
 }
 
 extension $RpcStatusExtension on RpcStatus {

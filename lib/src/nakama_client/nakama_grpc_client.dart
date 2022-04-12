@@ -95,6 +95,11 @@ class NakamaGrpcClient extends NakamaBaseClient {
       );
 
   @override
+  Future<String> getMatch() async {
+    throw 'Not implemented';
+  }
+
+  @override
   Future<model.Session> authenticateEmail({
     required String email,
     required String password,
