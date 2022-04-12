@@ -95,7 +95,7 @@ class NakamaGrpcClient extends NakamaBaseClient {
       );
 
   @override
-  Future<String> getMatch() async {
+  Future<String> getMatch(model.Session session) async {
     throw 'Not implemented';
   }
 

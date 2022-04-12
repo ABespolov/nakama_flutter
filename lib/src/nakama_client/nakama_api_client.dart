@@ -95,7 +95,8 @@ class NakamaRestApiClient extends NakamaBaseClient {
   Apigrpc get _api => _chopperClient.getService<Apigrpc>();
 
   @override
-  Future<String> getMatch() async {
+  Future<String> getMatch(model.Session session) async {
+    _session = session;
     final res = await _api.matchCreate();
 
     if (res.body == null) {
