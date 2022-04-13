@@ -99,8 +99,8 @@ class NakamaRestApiClient extends NakamaBaseClient {
     _session = session;
     final res = await _api.matchCreate();
 
-    if (res.body == null) {
-      throw Exception('Authentication failed.');
+    if (res.error != null) {
+      throw FormatException('Authentication failed.', res.error);
     }
 
     final data = res.body!;
@@ -127,8 +127,8 @@ class NakamaRestApiClient extends NakamaBaseClient {
       username: username,
     );
 
-    if (res.body == null) {
-      throw Exception('Authentication failed.');
+    if (res.error != null) {
+      throw FormatException('Authentication failed.', res.error);
     }
 
     final data = res.body!;
@@ -156,8 +156,8 @@ class NakamaRestApiClient extends NakamaBaseClient {
       username: username,
     );
 
-    if (res.body == null) {
-      throw Exception('Authentication failed.');
+    if (res.error != null) {
+      throw FormatException('Authentication failed.', res.error);
     }
 
     final data = res.body!;
@@ -187,8 +187,8 @@ class NakamaRestApiClient extends NakamaBaseClient {
       username: username,
     );
 
-    if (res.body == null) {
-      throw Exception('Authentication failed.');
+    if (res.error != null) {
+      throw FormatException('Authentication failed.', res.error);
     }
 
     final data = res.body!;
@@ -216,8 +216,8 @@ class NakamaRestApiClient extends NakamaBaseClient {
       username: username,
     );
 
-    if (res.body == null) {
-      throw Exception('Authentication failed.');
+    if (res.error != null) {
+      throw FormatException('Authentication failed.', res.error);
     }
 
     final data = res.body!;
@@ -255,8 +255,8 @@ class NakamaRestApiClient extends NakamaBaseClient {
       username: username,
     );
 
-    if (res.body == null) {
-      throw Exception('Authentication failed.');
+    if (res.error != null) {
+      throw FormatException('Authentication failed.', res.error);
     }
 
     final data = res.body!;
@@ -281,8 +281,8 @@ class NakamaRestApiClient extends NakamaBaseClient {
       username: username,
     );
 
-    if (res.body == null) {
-      throw Exception('Authentication failed.');
+    if (res.error != null) {
+      throw FormatException('Authentication failed.', res.error);
     }
 
     final data = res.body!;
@@ -307,8 +307,8 @@ class NakamaRestApiClient extends NakamaBaseClient {
       username: username,
     );
 
-    if (res.body == null) {
-      throw Exception('Authentication failed.');
+    if (res.error != null) {
+      throw FormatException('Authentication failed.', res.error);
     }
 
     final data = res.body!;
