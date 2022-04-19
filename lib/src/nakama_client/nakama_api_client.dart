@@ -295,6 +295,32 @@ class NakamaRestApiClient extends NakamaBaseClient {
   }
 
   @override
+  Future<model.Session> authenticateApple({
+    required String token,
+    bool create = true,
+    String? username,
+    Map<String, String>? vars,
+  }) async {
+    final res = await _api.nakamaAuthenticateApple(
+      body: ApiAccountApple(token: token, vars: vars),
+      create: create,
+      username: username,
+    );
+
+    if (res.error != null) {
+      throw FormatException('Authentication failed.', res.error);
+    }
+
+    final data = res.body!;
+
+    return model.Session(
+      created: data.created ?? false,
+      token: data.token!,
+      refreshToken: data.refreshToken,
+    );
+  }
+
+  @override
   Future<model.Session> authenticateCustom({
     required String id,
     bool create = true,

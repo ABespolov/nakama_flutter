@@ -71,6 +71,13 @@ abstract class NakamaBaseClient {
     Map<String, String>? vars,
   });
 
+  Future<model.Session> authenticateApple({
+    required String token,
+    bool create = true,
+    String? username,
+    Map<String, String>? vars,
+  });
+
   Future<model.Session> authenticateCustom({
     required String id,
     bool create = true,
