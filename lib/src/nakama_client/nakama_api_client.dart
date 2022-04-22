@@ -409,6 +409,28 @@ class NakamaRestApiClient extends NakamaBaseClient {
       ),
     );
   }
+
+  @override
+  Future<ApiSession> sessionRefreshRequest(
+      {required String token, Map<String, String>? vars}) async {
+    final res = await _api.nakamaSessionRefresh(
+      body: ApiSessionRefreshRequest(
+        token: token,
+        vars: vars,
+      ),
+    );
+
+    if (res.error != null) {
+      throw FormatException('SessionRefreshRequest failed.', res.error);
+    }
+
+    final data = res.body!;
+
+    return ApiSession(
+        created: data.created,
+        token: data.token,
+        refreshToken: data.refreshToken);
+  }
 }
 
 NakamaBaseClient getNakamaClient({

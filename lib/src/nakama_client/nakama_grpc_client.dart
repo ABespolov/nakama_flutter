@@ -5,6 +5,7 @@ import 'package:nakama/api.dart';
 import 'package:nakama/src/api/proto/apigrpc/apigrpc.pbgrpc.dart';
 import 'package:grpc/grpc.dart';
 import 'package:nakama/nakama.dart';
+import 'package:nakama/src/rest/apigrpc.swagger.dart';
 import 'package:nakama/src/session.dart' as model;
 
 import 'nakama_client.dart';
@@ -349,6 +350,21 @@ class NakamaGrpcClient extends NakamaBaseClient {
         ),
       ],
     ));
+  }
+
+  @override
+  Future<model.Session> authenticateApple(
+      {required String token,
+      bool create = true,
+      String? username,
+      Map<String, String>? vars}) {
+    throw 'Not implemented';
+  }
+
+  @override
+  Future<ApiSession> sessionRefreshRequest(
+      {required String token, Map<String, String>? vars}) {
+    throw 'Not implemented';
   }
 }
 
