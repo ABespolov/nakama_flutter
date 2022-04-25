@@ -147,6 +147,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
     String? username,
     Map<String, String>? vars,
   }) async {
+    _session = null;
     final res = await _api.nakamaAuthenticateDevice(
       body: ApiAccountDevice(
         id: deviceId,
@@ -177,6 +178,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
     Map<String, String>? vars,
     bool import = false,
   }) async {
+    _session = null;
     final res = await _api.nakamaAuthenticateFacebook(
       body: ApiAccountFacebook(
         token: token,
@@ -207,6 +209,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
     String? username,
     Map<String, String>? vars,
   }) async {
+    _session = null;
     final res = await _api.nakamaAuthenticateGoogle(
       body: ApiAccountGoogle(
         token: token,
@@ -241,6 +244,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
     String? username,
     Map<String, String>? vars,
   }) async {
+    _session = null;
     final res = await _api.nakamaAuthenticateGameCenter(
       body: ApiAccountGameCenter(
         playerId: playerId,
@@ -301,6 +305,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
     String? username,
     Map<String, String>? vars,
   }) async {
+    _session = null;
     final res = await _api.nakamaAuthenticateApple(
       body: ApiAccountApple(token: token, vars: vars),
       create: create,
