@@ -436,6 +436,112 @@ class NakamaRestApiClient extends NakamaBaseClient {
         token: data.token,
         refreshToken: data.refreshToken);
   }
+
+  @override
+  Future<dynamic> linkDevice(
+      {required String? id, Map<String, String>? vars}) async {
+    final res = await _api.nakamaLinkDevice(
+      body: ApiAccountDevice(
+        id: id,
+        vars: vars,
+      ),
+    );
+
+    if (res.error != null) {
+      throw FormatException('Link Device failed.', res.error);
+    }
+
+    final data = res.body!;
+
+    return data;
+  }
+
+  @override
+  Future<dynamic> linkApple(
+      {required String? token, Map<String, String>? vars}) async {
+    final res = await _api.nakamaLinkApple(
+      body: ApiAccountApple(
+        token: token,
+        vars: vars,
+      ),
+    );
+
+    if (res.error != null) {
+      throw FormatException('Link Apple failed.', res.error);
+    }
+
+    final data = res.body!;
+
+    return data;
+  }
+
+  @override
+  Future<dynamic> linkGoogle(
+      {required String? token, Map<String, String>? vars}) async {
+    final res = await _api.nakamaLinkGoogle(
+      body: ApiAccountGoogle(
+        token: token,
+        vars: vars,
+      ),
+    );
+
+    if (res.error != null) {
+      throw FormatException('Link Google failed.', res.error);
+    }
+
+    final data = res.body!;
+
+    return data;
+  }
+
+  @override
+  Future<dynamic> linkFacebook(
+      {required String? token, Map<String, String>? vars}) async {
+    final res = await _api.nakamaLinkFacebook(
+      body: ApiAccountFacebook(
+        token: token,
+        vars: vars,
+      ),
+    );
+
+    if (res.error != null) {
+      throw FormatException('Link Facebook failed.', res.error);
+    }
+
+    final data = res.body!;
+
+    return data;
+  }
+
+  @override
+  Future<dynamic> linkGameCenter(
+      {String? playerId,
+      String? bundleId,
+      String? timestampSeconds,
+      String? salt,
+      String? signature,
+      String? publicKeyUrl,
+      Map<String, String>? vars}) async {
+    final res = await _api.nakamaLinkGameCenter(
+      body: ApiAccountGameCenter(
+        playerId: playerId,
+        bundleId: bundleId,
+        timestampSeconds: timestampSeconds,
+        salt: salt,
+        signature: signature,
+        publicKeyUrl: publicKeyUrl,
+        vars: vars,
+      ),
+    );
+
+    if (res.error != null) {
+      throw FormatException('Link Facebook failed.', res.error);
+    }
+
+    final data = res.body!;
+
+    return data;
+  }
 }
 
 NakamaBaseClient getNakamaClient({

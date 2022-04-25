@@ -108,4 +108,33 @@ abstract class NakamaBaseClient {
     required String token,
     Map<String, String>? vars,
   });
+
+  Future<dynamic> linkDevice({
+    required String id,
+    Map<String, String>? vars,
+  });
+
+  Future<dynamic> linkApple({
+    required String token,
+    Map<String, String>? vars,
+  });
+
+  Future<dynamic> linkGoogle({
+    required String token,
+    Map<String, String>? vars,
+  });
+
+  Future<dynamic> linkFacebook({
+    required String token,
+    Map<String, String>? vars,
+  });
+
+  Future<dynamic> linkGameCenter(
+      {String? playerId,
+      String? bundleId,
+      String? timestampSeconds,
+      String? salt,
+      String? signature,
+      String? publicKeyUrl,
+      Map<String, String>? vars});
 }

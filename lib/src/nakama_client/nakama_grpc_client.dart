@@ -366,6 +366,38 @@ class NakamaGrpcClient extends NakamaBaseClient {
       {required String token, Map<String, String>? vars}) {
     throw 'Not implemented';
   }
+
+  @override
+  Future linkApple({required String token, Map<String, String>? vars}) {
+    throw 'Not implemented';
+  }
+
+  @override
+  Future linkDevice({required String id, Map<String, String>? vars}) {
+    throw 'Not implemented';
+  }
+
+  @override
+  Future linkFacebook({required String token, Map<String, String>? vars}) {
+    throw 'Not implemented';
+  }
+
+  @override
+  Future linkGameCenter(
+      {String? playerId,
+      String? bundleId,
+      String? timestampSeconds,
+      String? salt,
+      String? signature,
+      String? publicKeyUrl,
+      Map<String, String>? vars}) {
+    throw 'Not implemented';
+  }
+
+  @override
+  Future linkGoogle({required String token, Map<String, String>? vars}) {
+    throw 'Not implemented';
+  }
 }
 
 NakamaBaseClient getNakamaClient({
