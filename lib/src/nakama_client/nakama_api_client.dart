@@ -545,7 +545,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
 
   @override
   Future<dynamic> sessionLogout({required model.Session session}) async {
-    _session = _session;
+    _session = session;
     final res = await _api.nakamaSessionLogout(
       body: ApiSessionLogoutRequest(),
     );
