@@ -542,6 +542,24 @@ class NakamaRestApiClient extends NakamaBaseClient {
 
     return data;
   }
+
+  @override
+  Future<dynamic> sessionLogout({String? token, String? refreshToken}) async {
+    final res = await _api.nakamaSessionLogout(
+      body: ApiSessionLogoutRequest(
+        token: token,
+        refreshToken: refreshToken,
+      ),
+    );
+
+    if (res.error != null) {
+      throw FormatException('Session Logout failed.', res.error);
+    }
+
+    final data = res.body!;
+
+    return data;
+  }
 }
 
 NakamaBaseClient getNakamaClient({

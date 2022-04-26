@@ -129,6 +129,8 @@ abstract class NakamaBaseClient {
     Map<String, String>? vars,
   });
 
+  Future<dynamic> sessionLogout({String? token, String? refreshToken});
+
   Future<dynamic> linkGameCenter(
       {String? playerId,
       String? bundleId,

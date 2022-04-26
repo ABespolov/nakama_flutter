@@ -398,6 +398,11 @@ class NakamaGrpcClient extends NakamaBaseClient {
   Future linkGoogle({required String token, Map<String, String>? vars}) {
     throw 'Not implemented';
   }
+
+  @override
+  Future sessionLogout({String? token, String? refreshToken}) {
+    throw 'Not implemented';
+  }
 }
 
 NakamaBaseClient getNakamaClient({
