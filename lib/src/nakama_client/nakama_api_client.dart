@@ -544,12 +544,10 @@ class NakamaRestApiClient extends NakamaBaseClient {
   }
 
   @override
-  Future<dynamic> sessionLogout({String? token, String? refreshToken}) async {
+  Future<dynamic> sessionLogout({required model.Session session}) async {
+    _session = _session;
     final res = await _api.nakamaSessionLogout(
-      body: ApiSessionLogoutRequest(
-        token: token,
-        refreshToken: refreshToken,
-      ),
+      body: ApiSessionLogoutRequest(),
     );
 
     if (res.error != null) {

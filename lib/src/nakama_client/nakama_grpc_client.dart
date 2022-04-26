@@ -400,7 +400,7 @@ class NakamaGrpcClient extends NakamaBaseClient {
   }
 
   @override
-  Future sessionLogout({String? token, String? refreshToken}) {
+  Future sessionLogout({required model.Session session}) {
     throw 'Not implemented';
   }
 }

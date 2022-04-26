@@ -129,7 +129,7 @@ abstract class NakamaBaseClient {
     Map<String, String>? vars,
   });
 
-  Future<dynamic> sessionLogout({String? token, String? refreshToken});
+  Future<dynamic> sessionLogout({ required model.Session session});
 
   Future<dynamic> linkGameCenter(
       {String? playerId,
