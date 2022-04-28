@@ -111,21 +111,25 @@ abstract class NakamaBaseClient {
 
   Future<dynamic> linkDevice({
     required String id,
+    required model.Session session,
     Map<String, String>? vars,
   });
 
   Future<dynamic> linkApple({
     required String token,
+    required model.Session session,
     Map<String, String>? vars,
   });
 
   Future<dynamic> linkGoogle({
     required String token,
+    required model.Session session,
     Map<String, String>? vars,
   });
 
   Future<dynamic> linkFacebook({
     required String token,
+    required model.Session session,
     Map<String, String>? vars,
   });
 

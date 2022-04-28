@@ -368,17 +368,26 @@ class NakamaGrpcClient extends NakamaBaseClient {
   }
 
   @override
-  Future linkApple({required String token, Map<String, String>? vars}) {
+  Future linkApple(
+      {required String token,
+      required model.Session session,
+      Map<String, String>? vars}) {
     throw 'Not implemented';
   }
 
   @override
-  Future linkDevice({required String id, Map<String, String>? vars}) {
+  Future linkDevice(
+      {required String id,
+      required model.Session session,
+      Map<String, String>? vars}) {
     throw 'Not implemented';
   }
 
   @override
-  Future linkFacebook({required String token, Map<String, String>? vars}) {
+  Future linkFacebook(
+      {required String token,
+      required model.Session session,
+      Map<String, String>? vars}) {
     throw 'Not implemented';
   }
 
@@ -395,7 +404,10 @@ class NakamaGrpcClient extends NakamaBaseClient {
   }
 
   @override
-  Future linkGoogle({required String token, Map<String, String>? vars}) {
+  Future linkGoogle(
+      {required String token,
+      required model.Session session,
+      Map<String, String>? vars}) {
     throw 'Not implemented';
   }
 

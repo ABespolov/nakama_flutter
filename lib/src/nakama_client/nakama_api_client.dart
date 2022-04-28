@@ -418,6 +418,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
   @override
   Future<ApiSession> sessionRefreshRequest(
       {required String token, Map<String, String>? vars}) async {
+    _session = null;
     final res = await _api.nakamaSessionRefresh(
       body: ApiSessionRefreshRequest(
         token: token,
@@ -439,7 +440,10 @@ class NakamaRestApiClient extends NakamaBaseClient {
 
   @override
   Future<dynamic> linkDevice(
-      {required String? id, Map<String, String>? vars}) async {
+      {required String? id,
+      required model.Session session,
+      Map<String, String>? vars}) async {
+    _session = session;
     final res = await _api.nakamaLinkDevice(
       body: ApiAccountDevice(
         id: id,
@@ -458,7 +462,10 @@ class NakamaRestApiClient extends NakamaBaseClient {
 
   @override
   Future<dynamic> linkApple(
-      {required String? token, Map<String, String>? vars}) async {
+      {required String? token,
+      required model.Session session,
+      Map<String, String>? vars}) async {
+    _session = _session;
     final res = await _api.nakamaLinkApple(
       body: ApiAccountApple(
         token: token,
@@ -477,7 +484,10 @@ class NakamaRestApiClient extends NakamaBaseClient {
 
   @override
   Future<dynamic> linkGoogle(
-      {required String? token, Map<String, String>? vars}) async {
+      {required String? token,
+      required model.Session session,
+      Map<String, String>? vars}) async {
+    _session = session;
     final res = await _api.nakamaLinkGoogle(
       body: ApiAccountGoogle(
         token: token,
@@ -496,7 +506,10 @@ class NakamaRestApiClient extends NakamaBaseClient {
 
   @override
   Future<dynamic> linkFacebook(
-      {required String? token, Map<String, String>? vars}) async {
+      {required String? token,
+      required model.Session session,
+      Map<String, String>? vars}) async {
+    _session = session;
     final res = await _api.nakamaLinkFacebook(
       body: ApiAccountFacebook(
         token: token,
