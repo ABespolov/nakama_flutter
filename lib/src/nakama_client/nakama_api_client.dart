@@ -465,7 +465,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
       {required String? token,
       required model.Session session,
       Map<String, String>? vars}) async {
-    _session = _session;
+    _session = session;
     final res = await _api.nakamaLinkApple(
       body: ApiAccountApple(
         token: token,
