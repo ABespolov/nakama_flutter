@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:chopper/chopper.dart';
-import 'package:nakama/api.dart';
 import 'package:nakama/nakama.dart';
 import 'package:nakama/src/rest/apigrpc.swagger.dart';
 import 'package:nakama/src/session.dart' as model;
@@ -71,7 +70,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
       services: [Apigrpc.create()],
       interceptors: [
         // Auth Interceptor
-        (Request request) async {
+            (Request request) async {
           // Server Key Auth
           if (_session == null) {
             return applyHeader(
@@ -96,7 +95,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
 
   @override
   Future<String> getMatch(model.Session session) async {
-    _session = session;
+   /* _session = session;
     final res = await _api.matchCreate();
 
     if (res.error != null) {
@@ -106,10 +105,11 @@ class NakamaRestApiClient extends NakamaBaseClient {
     final data = res.body!;
     final matchId = json.decode(data.payload ?? '')['matchId'];
 
-    return matchId;
+    return matchId;*/
+    return '';
   }
 
-  @override
+/*  @override
   Future<model.Session> authenticateEmail({
     required String email,
     required String password,
@@ -138,39 +138,36 @@ class NakamaRestApiClient extends NakamaBaseClient {
       token: data.token!,
       refreshToken: data.refreshToken,
     );
-  }
+  }*/
 
   @override
   Future<model.Session> authenticateDevice({
     required String deviceId,
-    bool create = true,
-    String? username,
-    Map<String, String>? vars,
+    required String userName,
   }) async {
     _session = null;
-    final res = await _api.nakamaAuthenticateDevice(
-      body: ApiAccountDevice(
-        id: deviceId,
-        vars: vars,
+    final res = await _api.colyseusAuthenticateDevice(
+      body: ApiAccountDeviceColyseus(
+        deviceId: deviceId,
+        username: userName,
       ),
-      create: create,
-      username: username,
     );
 
     if (res.error != null) {
       throw FormatException('Authentication failed.', res.error);
     }
 
-    final data = res.body!;
+    final data = res.body!.data!;
 
     return model.Session(
-      created: data.created ?? false,
       token: data.token!,
-      refreshToken: data.refreshToken,
+      expiresAt: data.expiresAt!,
+      refreshToken: data.refreshToken!,
+      refreshExpiresAt: data.refreshExpiresAt!
     );
   }
 
-  @override
+  /* @override
   Future<model.Session> authenticateFacebook({
     required String token,
     bool create = true,
@@ -571,6 +568,8 @@ class NakamaRestApiClient extends NakamaBaseClient {
 
     return data;
   }
+}
+*/
 }
 
 NakamaBaseClient getNakamaClient({

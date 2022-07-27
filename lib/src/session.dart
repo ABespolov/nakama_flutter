@@ -1,14 +1,13 @@
-import 'package:jwt_decoder/jwt_decoder.dart';
-
 class Session {
   final String token;
-  final String? refreshToken;
-  final bool created;
-  late final String userId;
+  final String expiresAt;
+  final String refreshToken;
+  final String refreshExpiresAt;
 
   Session({
     required this.token,
-    required this.created,
-    this.refreshToken,
-  }) : userId = JwtDecoder.decode(token)['uid'];
+    required this.expiresAt,
+    required this.refreshToken,
+    required this.refreshExpiresAt,
+  });
 }

@@ -1,6 +1,3 @@
-import 'package:nakama/api.dart';
-import 'package:nakama/nakama.dart';
-import 'package:nakama/src/rest/apigrpc.swagger.dart';
 import 'package:nakama/src/session.dart' as model;
 
 const _kDefaultAppKey = 'default';
@@ -23,22 +20,21 @@ abstract class NakamaBaseClient {
 
   Future<String> getMatch(model.Session session);
 
-  Future<model.Session> authenticateEmail({
+/*  Future<model.Session> authenticateEmail({
     required String email,
     required String password,
     bool create = false,
     String? username,
     Map<String, String>? vars,
-  });
+  });*/
 
   Future<model.Session> authenticateDevice({
     required String deviceId,
-    bool create = false,
-    String? username,
-    Map<String, String>? vars,
+    required String userName
   });
+}
 
-  Future<model.Session> authenticateFacebook({
+  /*Future<model.Session> authenticateFacebook({
     required String token,
     bool create = true,
     String? username,
@@ -144,3 +140,4 @@ abstract class NakamaBaseClient {
       String? publicKeyUrl,
       Map<String, String>? vars});
 }
+*/

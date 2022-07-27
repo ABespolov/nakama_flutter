@@ -33,7 +33,8 @@ class __HomeScreenState extends State<_HomeScreen> {
     super.initState();
 
     _nakamaClient = getNakamaClient(
-      host: '127.0.0.1',
+      host: 'dev.fineadviser.com',
+      httpPort: 3000,
       ssl: false,
       serverKey: 'defaultkey',
     );
@@ -45,25 +46,15 @@ class __HomeScreenState extends State<_HomeScreen> {
     super.dispose();
   }
 
-  void _signIn(String email, String password) {
-    _nakamaClient
-        .authenticateEmail(
-          email: email,
-          password: password,
-        )
-        // sign in was successful
-        .then((value) => setState(() => _session = value))
-
-        // get user's profile
-        .then((value) => _nakamaClient.getAccount(_session!))
-        .then((value) => setState(() => _account = value))
-        .then(
-          (value) => NakamaWebsocketClient.init(
-            host: '127.0.0.1',
-            ssl: false,
-            token: _session!.token,
-          ),
-        );
+  void _signIn(String deviceId, String username) async {
+    final session = await _nakamaClient.authenticateDevice(
+      deviceId: deviceId,
+      userName: username,
+    );
+    print(session.token);
+    print(session.expiresAt);
+    print(session.refreshToken);
+    print(session.refreshExpiresAt);
   }
 
   @override
