@@ -32,6 +32,10 @@ abstract class NakamaBaseClient {
     required String deviceId,
     required String userName
   });
+
+  Future<model.Session> refreshSession({
+    required String token,
+  });
 }
 
   /*Future<model.Session> authenticateFacebook({

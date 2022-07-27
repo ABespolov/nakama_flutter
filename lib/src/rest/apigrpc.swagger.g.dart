@@ -6,16 +6,6 @@ part of 'apigrpc.swagger.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-GetMatch _$GetMatchFromJson(Map<String, dynamic> json) {
-  return GetMatch(
-    payload: json['payload'] as String?,
-  );
-}
-
-Map<String, dynamic> _$GetMatchToJson(GetMatch instance) => <String, dynamic>{
-      'payload': instance.payload,
-    };
-
 ApiAccountDeviceColyseus _$ApiAccountDeviceColyseusFromJson(
     Map<String, dynamic> json) {
   return ApiAccountDeviceColyseus(
@@ -47,6 +37,19 @@ Map<String, dynamic> _$ApiSessionColyseusToJson(ApiSessionColyseus instance) =>
       'status': instance.status,
       'message': instance.message,
       'data': instance.data?.toJson(),
+    };
+
+ApiSessionRefreshRequest _$ApiSessionRefreshRequestFromJson(
+    Map<String, dynamic> json) {
+  return ApiSessionRefreshRequest(
+    refreshToken: json['refreshToken'] as String?,
+  );
+}
+
+Map<String, dynamic> _$ApiSessionRefreshRequestToJson(
+        ApiSessionRefreshRequest instance) =>
+    <String, dynamic>{
+      'refreshToken': instance.refreshToken,
     };
 
 ProtobufAny _$ProtobufAnyFromJson(Map<String, dynamic> json) {

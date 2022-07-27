@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class SignInBox extends StatelessWidget {
-  final _email = TextEditingController(text: 'foo@bar.de');
-  final _password = TextEditingController(text: 'password');
+  final _email = TextEditingController(text: 'someId');
+  final _password = TextEditingController(text: 'newUser');
 
   final Function(String, String) onSignIn;
 
@@ -19,20 +19,19 @@ class SignInBox extends StatelessWidget {
           children: [
             Expanded(
               child: TextField(
-                decoration: InputDecoration(labelText: 'E-Mail'),
+                decoration: InputDecoration(labelText: 'Device Id'),
                 controller: _email,
               ),
             ),
             Expanded(
               child: TextField(
-                decoration: InputDecoration(labelText: 'Password'),
-                obscureText: true,
+                decoration: InputDecoration(labelText: 'user name'),
                 controller: _password,
               ),
             ),
             ElevatedButton(
               onPressed: () => onSignIn.call(_email.text, _password.text),
-              child: Text('Login'),
+              child: Text('SigUp'),
             ),
           ],
         ),

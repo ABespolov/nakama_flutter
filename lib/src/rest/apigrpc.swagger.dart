@@ -37,46 +37,23 @@ abstract class Apigrpc extends ChopperService {
   @Post(path: '/auth/signin/device')
   Future<chopper.Response<ApiSessionColyseus>> colyseusAuthenticateDevice(
       {@Body() @required ApiAccountDeviceColyseus? body});
+
+  ///Refresh a user's session using a refresh token retrieved from a previous authentication request.
+  ///@param body The device account details.
+
+  @Post(path: '/auth/refresh')
+  Future<chopper.Response<ApiSessionColyseus>> colyseusSessionRefresh(
+      {@Body() @required ApiSessionRefreshRequest? body});
 }
 
 final Map<Type, Object Function(Map<String, dynamic>)>
     ApigrpcJsonDecoderMappings = {
-  GetMatch: GetMatch.fromJsonFactory,
   ApiAccountDeviceColyseus: ApiAccountDeviceColyseus.fromJsonFactory,
   ApiSessionColyseus: ApiSessionColyseus.fromJsonFactory,
+  ApiSessionRefreshRequest: ApiSessionRefreshRequest.fromJsonFactory,
   ProtobufAny: ProtobufAny.fromJsonFactory,
   RpcStatus: RpcStatus.fromJsonFactory,
 };
-
-@JsonSerializable(explicitToJson: true)
-class GetMatch {
-  GetMatch({
-    this.payload,
-  });
-
-  factory GetMatch.fromJson(Map<String, dynamic> json) =>
-      _$GetMatchFromJson(json);
-
-  @JsonKey(name: 'payload', includeIfNull: true)
-  final String? payload;
-  static const fromJsonFactory = _$GetMatchFromJson;
-  static const toJsonFactory = _$GetMatchToJson;
-  Map<String, dynamic> toJson() => _$GetMatchToJson(this);
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other is GetMatch &&
-            (identical(other.payload, payload) ||
-                const DeepCollectionEquality().equals(other.payload, payload)));
-  }
-}
-
-extension $GetMatchExtension on GetMatch {
-  GetMatch copyWith({String? payload}) {
-    return GetMatch(payload: payload ?? this.payload);
-  }
-}
 
 @JsonSerializable(explicitToJson: true)
 class ApiAccountDeviceColyseus {
@@ -159,6 +136,38 @@ extension $ApiSessionColyseusExtension on ApiSessionColyseus {
         status: status ?? this.status,
         message: message ?? this.message,
         data: data ?? this.data);
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
+class ApiSessionRefreshRequest {
+  ApiSessionRefreshRequest({
+    this.refreshToken,
+  });
+
+  factory ApiSessionRefreshRequest.fromJson(Map<String, dynamic> json) =>
+      _$ApiSessionRefreshRequestFromJson(json);
+
+  @JsonKey(name: 'refreshToken', includeIfNull: true)
+  final String? refreshToken;
+  static const fromJsonFactory = _$ApiSessionRefreshRequestFromJson;
+  static const toJsonFactory = _$ApiSessionRefreshRequestToJson;
+  Map<String, dynamic> toJson() => _$ApiSessionRefreshRequestToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiSessionRefreshRequest &&
+            (identical(other.refreshToken, refreshToken) ||
+                const DeepCollectionEquality()
+                    .equals(other.refreshToken, refreshToken)));
+  }
+}
+
+extension $ApiSessionRefreshRequestExtension on ApiSessionRefreshRequest {
+  ApiSessionRefreshRequest copyWith({String? refreshToken}) {
+    return ApiSessionRefreshRequest(
+        refreshToken: refreshToken ?? this.refreshToken);
   }
 }
 

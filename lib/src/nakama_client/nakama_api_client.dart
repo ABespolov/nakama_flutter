@@ -70,7 +70,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
       services: [Apigrpc.create()],
       interceptors: [
         // Auth Interceptor
-            (Request request) async {
+        (Request request) async {
           // Server Key Auth
           if (_session == null) {
             return applyHeader(
@@ -95,7 +95,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
 
   @override
   Future<String> getMatch(model.Session session) async {
-   /* _session = session;
+    /* _session = session;
     final res = await _api.matchCreate();
 
     if (res.error != null) {
@@ -160,11 +160,31 @@ class NakamaRestApiClient extends NakamaBaseClient {
     final data = res.body!.data!;
 
     return model.Session(
-      token: data.token!,
-      expiresAt: data.expiresAt!,
-      refreshToken: data.refreshToken!,
-      refreshExpiresAt: data.refreshExpiresAt!
+        token: data.token!,
+        expiresAt: data.expiresAt!,
+        refreshToken: data.refreshToken!,
+        refreshExpiresAt: data.refreshExpiresAt!);
+  }
+
+  @override
+  Future<model.Session> refreshSession({
+    required String token,
+  }) async {
+    final res = await _api.colyseusSessionRefresh(
+      body: ApiSessionRefreshRequest(refreshToken: token),
     );
+
+    if (res.error != null) {
+      throw FormatException('RefreshSession failed.', res.error);
+    }
+
+    final data = res.body!.data!;
+
+    return model.Session(
+        token: data.token!,
+        expiresAt: data.expiresAt!,
+        refreshToken: data.refreshToken!,
+        refreshExpiresAt: data.refreshExpiresAt!);
   }
 
   /* @override

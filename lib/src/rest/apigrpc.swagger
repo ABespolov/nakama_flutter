@@ -81,19 +81,48 @@
           }
         ]
       }
+    },
+    "/auth/refresh": {
+      "post": {
+        "summary": "Refresh a user's session using a refresh token retrieved from a previous authentication request.",
+        "operationId": "Colyseus_SessionRefresh",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiSessionColyseus"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "The device account details.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiSessionRefreshRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Nakama"
+        ],
+        "security": [
+          {
+            "BasicAuth": []
+          }
+        ]
+      }
     }
   },
   "definitions": {
-    "getMatch": {
-      "type": "object",
-      "properties": {
-        "payload": {
-          "type": "string",
-          "description": "Match Id"
-        }
-      },
-      "description": "A single user-role pair."
-    },
     "apiAccountDeviceColyseus": {
       "type": "object",
       "properties": {
@@ -142,6 +171,16 @@
         }
       },
       "description": "A user's session used to authenticate messages."
+    },
+    "apiSessionRefreshRequest": {
+      "type": "object",
+      "properties": {
+        "refreshToken": {
+          "type": "string",
+          "description": "Refresh token."
+        }
+      },
+      "description": "Authenticate against the server with a refresh token."
     },
     "protobufAny": {
       "type": "object",

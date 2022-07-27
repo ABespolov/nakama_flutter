@@ -25,7 +25,6 @@ class __HomeScreenState extends State<_HomeScreen> {
   late final NakamaBaseClient _nakamaClient;
 
   Session? _session;
-  api.Account? _account;
   rt.Match? _match;
 
   @override
@@ -51,10 +50,17 @@ class __HomeScreenState extends State<_HomeScreen> {
       deviceId: deviceId,
       userName: username,
     );
-    print(session.token);
-    print(session.expiresAt);
-    print(session.refreshToken);
-    print(session.refreshExpiresAt);
+    _session = session;
+  }
+
+  void _refreshSession() async {
+    final refreshToken = _session?.refreshToken;
+    if (refreshToken != null) {
+      final newSession =
+          await _nakamaClient.refreshSession(token: refreshToken);
+      _session = newSession;
+      print(_session);
+    }
   }
 
   @override
@@ -63,18 +69,24 @@ class __HomeScreenState extends State<_HomeScreen> {
       appBar: AppBar(title: Text('Nakama Flutter Demo')),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: _session != null && _account != null
-            ? Column(
-                children: [
-                  Welcome(_account!),
-                  if (_match == null)
-                    Matchmaker(
-                      onMatch: (m) => setState(() => _match = m),
-                    ),
-                  if (_match != null) MatchArea(_match!),
-                ],
-              )
-            : SignInBox(onSignIn: _signIn),
+        child: Column(
+          children: [
+            SignInBox(onSignIn: _signIn),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: [
+                Text('Refresh Token'),
+                SizedBox(
+                  width: 20,
+                ),
+                ElevatedButton(
+                    onPressed: () => _refreshSession(), child: Text('Refresh')),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
