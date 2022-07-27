@@ -220,14 +220,32 @@ extension $ApiSessionRefreshRequestExtension on ApiSessionRefreshRequest {
 
 @JsonSerializable(explicitToJson: true)
 class ApiJoinOrCreateMatchRequest {
-  ApiJoinOrCreateMatchRequest();
+  ApiJoinOrCreateMatchRequest({
+    this.token,
+  });
 
   factory ApiJoinOrCreateMatchRequest.fromJson(Map<String, dynamic> json) =>
       _$ApiJoinOrCreateMatchRequestFromJson(json);
 
+  @JsonKey(name: 'token', includeIfNull: true)
+  final String? token;
   static const fromJsonFactory = _$ApiJoinOrCreateMatchRequestFromJson;
   static const toJsonFactory = _$ApiJoinOrCreateMatchRequestToJson;
   Map<String, dynamic> toJson() => _$ApiJoinOrCreateMatchRequestToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiJoinOrCreateMatchRequest &&
+            (identical(other.token, token) ||
+                const DeepCollectionEquality().equals(other.token, token)));
+  }
+}
+
+extension $ApiJoinOrCreateMatchRequestExtension on ApiJoinOrCreateMatchRequest {
+  ApiJoinOrCreateMatchRequest copyWith({String? token}) {
+    return ApiJoinOrCreateMatchRequest(token: token ?? this.token);
+  }
 }
 
 @JsonSerializable(explicitToJson: true)

@@ -71,12 +71,16 @@ Map<String, dynamic> _$ApiSessionRefreshRequestToJson(
 
 ApiJoinOrCreateMatchRequest _$ApiJoinOrCreateMatchRequestFromJson(
     Map<String, dynamic> json) {
-  return ApiJoinOrCreateMatchRequest();
+  return ApiJoinOrCreateMatchRequest(
+    token: json['token'] as String?,
+  );
 }
 
 Map<String, dynamic> _$ApiJoinOrCreateMatchRequestToJson(
         ApiJoinOrCreateMatchRequest instance) =>
-    <String, dynamic>{};
+    <String, dynamic>{
+      'token': instance.token,
+    };
 
 ProtobufAny _$ProtobufAnyFromJson(Map<String, dynamic> json) {
   return ProtobufAny(

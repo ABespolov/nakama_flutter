@@ -246,7 +246,12 @@
     },
     "apiJoinOrCreateMatchRequest": {
       "type": "object",
-      "properties": {},
+      "properties": {
+        "token": {
+          "type": "string",
+          "description": "Session token"
+        }
+      },
       "description": "Connect against the WS with match data"
     },
     "protobufAny": {

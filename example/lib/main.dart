@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nakama/nakama.dart';
 import 'package:nakama/api.dart' as api;
@@ -51,6 +52,28 @@ class __HomeScreenState extends State<_HomeScreen> {
       userName: username,
     );
     _session = session;
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            content: Column(
+              children: [
+                Text('${_session?.token}'),
+                Text('${_session?.expiresAt}'),
+                Text('${_session?.refreshToken}'),
+                Text('${_session?.refreshExpiresAt}'),
+              ],
+            ),
+            actions: <CupertinoDialogAction>[
+              CupertinoDialogAction(
+                child: const Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 
   void _refreshSession() async {
@@ -59,15 +82,54 @@ class __HomeScreenState extends State<_HomeScreen> {
       final newSession =
           await _nakamaClient.refreshSession(token: refreshToken);
       _session = newSession;
-      print(_session);
+      showCupertinoDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CupertinoAlertDialog(
+              content: Column(
+                children: [
+                  Text('${_session?.token}'),
+                  Text('${_session?.expiresAt}'),
+                  Text('${_session?.refreshToken}'),
+                  Text('${_session?.refreshExpiresAt}'),
+                ],
+              ),
+              actions: <CupertinoDialogAction>[
+                CupertinoDialogAction(
+                  child: const Text('Ok'),
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
+                ),
+              ],
+            );
+          });
     }
   }
 
   void _joinOrCreateMatch() async {
     MatchData matchData = await _nakamaClient.joinOrCreateMatch();
-    print(matchData.sessionId);
-    print(matchData.processId);
-    print(matchData.roomId);
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            content: Column(
+              children: [
+                Text('${matchData.sessionId}'),
+                Text('${matchData.roomId}'),
+                Text('${matchData.processId}'),
+              ],
+            ),
+            actions: <CupertinoDialogAction>[
+              CupertinoDialogAction(
+                child: const Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 
   @override
@@ -97,7 +159,7 @@ class __HomeScreenState extends State<_HomeScreen> {
             ),
             Row(
               children: [
-                Text('Refresh Token'),
+                Text('GetMatchData'),
                 SizedBox(
                   width: 20,
                 ),

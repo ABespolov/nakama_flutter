@@ -191,7 +191,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
   @override
   Future<MatchData> joinOrCreateMatch() async {
     final res = await _api.colyseusJoinOrCreateMatch(
-        body: ApiJoinOrCreateMatchRequest());
+        body: ApiJoinOrCreateMatchRequest(token: _session?.token));
 
     if (res.error != null) {
       throw FormatException('joinOrCreateMatch failed.', res.error);
