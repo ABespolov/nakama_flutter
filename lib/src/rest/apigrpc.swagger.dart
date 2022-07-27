@@ -44,13 +44,22 @@ abstract class Apigrpc extends ChopperService {
   @Post(path: '/auth/refresh')
   Future<chopper.Response<ApiSessionColyseus>> colyseusSessionRefresh(
       {@Body() @required ApiSessionRefreshRequest? body});
+
+  ///JoinOrCreate match
+  ///@param body Empty body need fix on server
+
+  @Post(path: '/matchmake/joinOrCreate/geogame')
+  Future<chopper.Response<ApiJoinOrCreateMatch>> colyseusJoinOrCreateMatch(
+      {@Body() @required ApiJoinOrCreateMatchRequest? body});
 }
 
 final Map<Type, Object Function(Map<String, dynamic>)>
     ApigrpcJsonDecoderMappings = {
   ApiAccountDeviceColyseus: ApiAccountDeviceColyseus.fromJsonFactory,
   ApiSessionColyseus: ApiSessionColyseus.fromJsonFactory,
+  ApiJoinOrCreateMatch: ApiJoinOrCreateMatch.fromJsonFactory,
   ApiSessionRefreshRequest: ApiSessionRefreshRequest.fromJsonFactory,
+  ApiJoinOrCreateMatchRequest: ApiJoinOrCreateMatchRequest.fromJsonFactory,
   ProtobufAny: ProtobufAny.fromJsonFactory,
   RpcStatus: RpcStatus.fromJsonFactory,
 };
@@ -140,6 +149,44 @@ extension $ApiSessionColyseusExtension on ApiSessionColyseus {
 }
 
 @JsonSerializable(explicitToJson: true)
+class ApiJoinOrCreateMatch {
+  ApiJoinOrCreateMatch({
+    this.room,
+    this.sessionId,
+  });
+
+  factory ApiJoinOrCreateMatch.fromJson(Map<String, dynamic> json) =>
+      _$ApiJoinOrCreateMatchFromJson(json);
+
+  @JsonKey(name: 'room', includeIfNull: true)
+  final ApiJoinOrCreateMatch$Room? room;
+  @JsonKey(name: 'sessionId', includeIfNull: true)
+  final String? sessionId;
+  static const fromJsonFactory = _$ApiJoinOrCreateMatchFromJson;
+  static const toJsonFactory = _$ApiJoinOrCreateMatchToJson;
+  Map<String, dynamic> toJson() => _$ApiJoinOrCreateMatchToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiJoinOrCreateMatch &&
+            (identical(other.room, room) ||
+                const DeepCollectionEquality().equals(other.room, room)) &&
+            (identical(other.sessionId, sessionId) ||
+                const DeepCollectionEquality()
+                    .equals(other.sessionId, sessionId)));
+  }
+}
+
+extension $ApiJoinOrCreateMatchExtension on ApiJoinOrCreateMatch {
+  ApiJoinOrCreateMatch copyWith(
+      {ApiJoinOrCreateMatch$Room? room, String? sessionId}) {
+    return ApiJoinOrCreateMatch(
+        room: room ?? this.room, sessionId: sessionId ?? this.sessionId);
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
 class ApiSessionRefreshRequest {
   ApiSessionRefreshRequest({
     this.refreshToken,
@@ -169,6 +216,18 @@ extension $ApiSessionRefreshRequestExtension on ApiSessionRefreshRequest {
     return ApiSessionRefreshRequest(
         refreshToken: refreshToken ?? this.refreshToken);
   }
+}
+
+@JsonSerializable(explicitToJson: true)
+class ApiJoinOrCreateMatchRequest {
+  ApiJoinOrCreateMatchRequest();
+
+  factory ApiJoinOrCreateMatchRequest.fromJson(Map<String, dynamic> json) =>
+      _$ApiJoinOrCreateMatchRequestFromJson(json);
+
+  static const fromJsonFactory = _$ApiJoinOrCreateMatchRequestFromJson;
+  static const toJsonFactory = _$ApiJoinOrCreateMatchRequestToJson;
+  Map<String, dynamic> toJson() => _$ApiJoinOrCreateMatchRequestToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -305,6 +364,43 @@ extension $ApiSessionColyseus$DataExtension on ApiSessionColyseus$Data {
         expiresAt: expiresAt ?? this.expiresAt,
         refreshToken: refreshToken ?? this.refreshToken,
         refreshExpiresAt: refreshExpiresAt ?? this.refreshExpiresAt);
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
+class ApiJoinOrCreateMatch$Room {
+  ApiJoinOrCreateMatch$Room({
+    this.roomId,
+    this.processId,
+  });
+
+  factory ApiJoinOrCreateMatch$Room.fromJson(Map<String, dynamic> json) =>
+      _$ApiJoinOrCreateMatch$RoomFromJson(json);
+
+  @JsonKey(name: 'roomId', includeIfNull: true)
+  final String? roomId;
+  @JsonKey(name: 'processId', includeIfNull: true)
+  final String? processId;
+  static const fromJsonFactory = _$ApiJoinOrCreateMatch$RoomFromJson;
+  static const toJsonFactory = _$ApiJoinOrCreateMatch$RoomToJson;
+  Map<String, dynamic> toJson() => _$ApiJoinOrCreateMatch$RoomToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is ApiJoinOrCreateMatch$Room &&
+            (identical(other.roomId, roomId) ||
+                const DeepCollectionEquality().equals(other.roomId, roomId)) &&
+            (identical(other.processId, processId) ||
+                const DeepCollectionEquality()
+                    .equals(other.processId, processId)));
+  }
+}
+
+extension $ApiJoinOrCreateMatch$RoomExtension on ApiJoinOrCreateMatch$Room {
+  ApiJoinOrCreateMatch$Room copyWith({String? roomId, String? processId}) {
+    return ApiJoinOrCreateMatch$Room(
+        roomId: roomId ?? this.roomId, processId: processId ?? this.processId);
   }
 }
 

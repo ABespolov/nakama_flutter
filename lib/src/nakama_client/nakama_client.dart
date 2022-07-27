@@ -28,17 +28,17 @@ abstract class NakamaBaseClient {
     Map<String, String>? vars,
   });*/
 
-  Future<model.Session> authenticateDevice({
-    required String deviceId,
-    required String userName
-  });
+  Future<model.Session> authenticateDevice(
+      {required String deviceId, required String userName});
 
   Future<model.Session> refreshSession({
     required String token,
   });
+
+  Future<model.MatchData> joinOrCreateMatch();
 }
 
-  /*Future<model.Session> authenticateFacebook({
+/*Future<model.Session> authenticateFacebook({
     required String token,
     bool create = true,
     String? username,

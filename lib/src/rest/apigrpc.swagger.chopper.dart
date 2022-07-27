@@ -40,4 +40,13 @@ class _$Apigrpc extends Apigrpc {
     final $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<ApiSessionColyseus, ApiSessionColyseus>($request);
   }
+
+  @override
+  Future<Response<ApiJoinOrCreateMatch>> colyseusJoinOrCreateMatch(
+      {ApiJoinOrCreateMatchRequest? body}) {
+    final $url = '/matchmake/joinOrCreate/geogame';
+    final $body = body;
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client.send<ApiJoinOrCreateMatch, ApiJoinOrCreateMatch>($request);
+  }
 }

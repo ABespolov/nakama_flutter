@@ -11,3 +11,15 @@ class Session {
     required this.refreshExpiresAt,
   });
 }
+
+class MatchData {
+  final String roomId;
+  final String processId;
+  final String sessionId;
+
+  MatchData({
+    required this.roomId,
+    required this.processId,
+    required this.sessionId,
+  });
+}

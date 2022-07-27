@@ -120,6 +120,45 @@
           }
         ]
       }
+    },
+    "/matchmake/joinOrCreate/geogame": {
+      "post": {
+        "summary": "JoinOrCreate match",
+        "operationId": "Colyseus_JoinOrCreateMatch",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiJoinOrCreateMatch"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "Empty body need fix on server",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiJoinOrCreateMatchRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Nakama"
+        ],
+        "security": [
+          {
+            "BasicAuth": []
+          }
+        ]
+      }
     }
   },
   "definitions": {
@@ -172,6 +211,29 @@
       },
       "description": "A user's session used to authenticate messages."
     },
+    "apiJoinOrCreateMatch": {
+      "type": "object",
+      "properties": {
+        "room": {
+          "type": "object",
+          "properties": {
+            "roomId": {
+              "type": "string",
+              "description": "Id - for connection to WS"
+            },
+            "processId": {
+              "type": "string",
+              "description": "Id - for connection to WS"
+            }
+          }
+        },
+        "sessionId": {
+          "type": "string",
+          "description": "Id - for connection to WS"
+        }
+      },
+      "description": "Connect against the WS with match data"
+    },
     "apiSessionRefreshRequest": {
       "type": "object",
       "properties": {
@@ -181,6 +243,11 @@
         }
       },
       "description": "Authenticate against the server with a refresh token."
+    },
+    "apiJoinOrCreateMatchRequest": {
+      "type": "object",
+      "properties": {},
+      "description": "Connect against the WS with match data"
     },
     "protobufAny": {
       "type": "object",

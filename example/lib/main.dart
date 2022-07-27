@@ -63,6 +63,13 @@ class __HomeScreenState extends State<_HomeScreen> {
     }
   }
 
+  void _joinOrCreateMatch() async {
+    MatchData matchData = await _nakamaClient.joinOrCreateMatch();
+    print(matchData.sessionId);
+    print(matchData.processId);
+    print(matchData.roomId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,6 +90,20 @@ class __HomeScreenState extends State<_HomeScreen> {
                 ),
                 ElevatedButton(
                     onPressed: () => _refreshSession(), child: Text('Refresh')),
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: [
+                Text('Refresh Token'),
+                SizedBox(
+                  width: 20,
+                ),
+                ElevatedButton(
+                    onPressed: () => _joinOrCreateMatch(),
+                    child: Text('GetMatchData')),
               ],
             )
           ],

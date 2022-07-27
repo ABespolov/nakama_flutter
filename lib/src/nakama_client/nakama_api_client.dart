@@ -145,7 +145,6 @@ class NakamaRestApiClient extends NakamaBaseClient {
     required String deviceId,
     required String userName,
   }) async {
-    _session = null;
     final res = await _api.colyseusAuthenticateDevice(
       body: ApiAccountDeviceColyseus(
         deviceId: deviceId,
@@ -180,11 +179,35 @@ class NakamaRestApiClient extends NakamaBaseClient {
 
     final data = res.body!.data!;
 
-    return model.Session(
+    _session = model.Session(
         token: data.token!,
         expiresAt: data.expiresAt!,
         refreshToken: data.refreshToken!,
         refreshExpiresAt: data.refreshExpiresAt!);
+
+    return _session!;
+  }
+
+  @override
+  Future<MatchData> joinOrCreateMatch() async {
+    final res = await _api.colyseusJoinOrCreateMatch(
+        body: ApiJoinOrCreateMatchRequest());
+
+    if (res.error != null) {
+      throw FormatException('joinOrCreateMatch failed.', res.error);
+    }
+
+    final roomId = res.body?.room?.roomId;
+    final processId = res.body?.room?.processId;
+    final sessionId = res.body?.sessionId;
+
+    if (roomId != null && processId != null && sessionId != null) {
+      return model.MatchData(
+          roomId: roomId, processId: processId, sessionId: sessionId);
+    } else {
+      throw FormatException(
+          'Not received roomId || processId || sessionId', res.error);
+    }
   }
 
   /* @override

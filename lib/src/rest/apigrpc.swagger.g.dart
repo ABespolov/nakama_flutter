@@ -39,6 +39,23 @@ Map<String, dynamic> _$ApiSessionColyseusToJson(ApiSessionColyseus instance) =>
       'data': instance.data?.toJson(),
     };
 
+ApiJoinOrCreateMatch _$ApiJoinOrCreateMatchFromJson(Map<String, dynamic> json) {
+  return ApiJoinOrCreateMatch(
+    room: json['room'] == null
+        ? null
+        : ApiJoinOrCreateMatch$Room.fromJson(
+            json['room'] as Map<String, dynamic>),
+    sessionId: json['sessionId'] as String?,
+  );
+}
+
+Map<String, dynamic> _$ApiJoinOrCreateMatchToJson(
+        ApiJoinOrCreateMatch instance) =>
+    <String, dynamic>{
+      'room': instance.room?.toJson(),
+      'sessionId': instance.sessionId,
+    };
+
 ApiSessionRefreshRequest _$ApiSessionRefreshRequestFromJson(
     Map<String, dynamic> json) {
   return ApiSessionRefreshRequest(
@@ -51,6 +68,15 @@ Map<String, dynamic> _$ApiSessionRefreshRequestToJson(
     <String, dynamic>{
       'refreshToken': instance.refreshToken,
     };
+
+ApiJoinOrCreateMatchRequest _$ApiJoinOrCreateMatchRequestFromJson(
+    Map<String, dynamic> json) {
+  return ApiJoinOrCreateMatchRequest();
+}
+
+Map<String, dynamic> _$ApiJoinOrCreateMatchRequestToJson(
+        ApiJoinOrCreateMatchRequest instance) =>
+    <String, dynamic>{};
 
 ProtobufAny _$ProtobufAnyFromJson(Map<String, dynamic> json) {
   return ProtobufAny(
@@ -99,4 +125,19 @@ Map<String, dynamic> _$ApiSessionColyseus$DataToJson(
       'expires_at': instance.expiresAt,
       'refresh_token': instance.refreshToken,
       'refresh_expires_at': instance.refreshExpiresAt,
+    };
+
+ApiJoinOrCreateMatch$Room _$ApiJoinOrCreateMatch$RoomFromJson(
+    Map<String, dynamic> json) {
+  return ApiJoinOrCreateMatch$Room(
+    roomId: json['roomId'] as String?,
+    processId: json['processId'] as String?,
+  );
+}
+
+Map<String, dynamic> _$ApiJoinOrCreateMatch$RoomToJson(
+        ApiJoinOrCreateMatch$Room instance) =>
+    <String, dynamic>{
+      'roomId': instance.roomId,
+      'processId': instance.processId,
     };
