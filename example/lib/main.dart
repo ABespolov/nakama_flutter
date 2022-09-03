@@ -1,12 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nakama/nakama.dart';
-import 'package:nakama/api.dart' as api;
-import 'package:nakama/rtapi.dart' as rt;
-import 'package:simple_multiplayer_web/widgets/match_area.dart';
-import 'package:simple_multiplayer_web/widgets/matchmaker.dart';
 import 'package:simple_multiplayer_web/widgets/sign_in_box.dart';
-import 'package:simple_multiplayer_web/widgets/welcome.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -24,9 +23,10 @@ class _HomeScreen extends StatefulWidget {
 
 class __HomeScreenState extends State<_HomeScreen> {
   late final NakamaBaseClient _nakamaClient;
+  late final NakamaWebsocketClient _websocketClient;
 
   Session? _session;
-  rt.Match? _match;
+  late final MatchData _matchData;
 
   @override
   void initState() {
@@ -40,9 +40,23 @@ class __HomeScreenState extends State<_HomeScreen> {
     );
   }
 
+  _startListenWs() {
+    _websocketClient = NakamaWebsocketClient.init(
+        host: "dev.fineadviser.com",
+        ssl: false,
+        roomId: "_matchData.roomId",
+        processId: "_matchData.processId",
+        sessionId: " _matchData.sessionId");
+
+/*    _websocketClient.onMatchData.listen((event) {}).onData((data) {
+      print("data");
+      print(data);
+    });*/
+  }
+
   @override
   void dispose() {
-    NakamaWebsocketClient.instance.close();
+    _websocketClient.close();
     super.dispose();
   }
 
@@ -108,16 +122,16 @@ class __HomeScreenState extends State<_HomeScreen> {
   }
 
   void _joinOrCreateMatch() async {
-    MatchData matchData = await _nakamaClient.joinOrCreateMatch();
+    _matchData = await _nakamaClient.joinOrCreateMatch();
     showCupertinoDialog(
         context: context,
         builder: (BuildContext context) {
           return CupertinoAlertDialog(
             content: Column(
               children: [
-                Text('${matchData.sessionId}'),
-                Text('${matchData.roomId}'),
-                Text('${matchData.processId}'),
+                Text('${_matchData.sessionId}'),
+                Text('${_matchData.roomId}'),
+                Text('${_matchData.processId}'),
               ],
             ),
             actions: <CupertinoDialogAction>[
@@ -167,7 +181,40 @@ class __HomeScreenState extends State<_HomeScreen> {
                     onPressed: () => _joinOrCreateMatch(),
                     child: Text('GetMatchData')),
               ],
-            )
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: [
+                Text('Start Ws'),
+                SizedBox(
+                  width: 20,
+                ),
+                ElevatedButton(
+                    onPressed: () => _startListenWs(), child: Text('Start Ws')),
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: [
+                Text('Send to Ws'),
+                SizedBox(
+                  width: 20,
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      var message = Uint8List(1);
+                      var bytedata = ByteData.view(message.buffer);
+                      bytedata.setUint8(0, 10);
+                      print(message);
+                      _websocketClient.sendMatchData(message);
+                    },
+                    child: Text('Send 10 to Ws')),
+              ],
+            ),
           ],
         ),
       ),

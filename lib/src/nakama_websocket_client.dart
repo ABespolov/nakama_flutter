@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:nakama/api.dart';
-import 'package:nakama/rtapi.dart' as rtpb;
+import 'dart:io';
+import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class NakamaWebsocketClient {
@@ -14,50 +14,17 @@ class NakamaWebsocketClient {
   final bool ssl;
 
   /// The user's access token.
-  final String token;
+  final String roomId;
+  final String processId;
+  final String sessionId;
 
   final void Function()? onDone;
   final void Function(dynamic error)? onError;
 
   late final WebSocketChannel _channel;
 
-  final _onChannelPresenceController =
-      StreamController<rtpb.ChannelPresenceEvent>.broadcast();
-  Stream<rtpb.ChannelPresenceEvent> get onChannelPresence =>
-      _onChannelPresenceController.stream;
-
-  final _onMatchmakerMatchedController =
-      StreamController<rtpb.MatchmakerMatched>.broadcast();
-  Stream<rtpb.MatchmakerMatched> get onMatchmakerMatched =>
-      _onMatchmakerMatchedController.stream;
-
-  final _onMatchDataController = StreamController<rtpb.MatchData>.broadcast();
-  Stream<rtpb.MatchData> get onMatchData => _onMatchDataController.stream;
-
-  final _onMatchPresenceController =
-      StreamController<rtpb.MatchPresenceEvent>.broadcast();
-  Stream<rtpb.MatchPresenceEvent> get onMatchPresence =>
-      _onMatchPresenceController.stream;
-
-  final _onNotificationsController =
-      StreamController<rtpb.Notifications>.broadcast();
-  Stream<rtpb.Notifications> get onNotifications =>
-      _onNotificationsController.stream;
-
-  final _onStatusPresenceController =
-      StreamController<rtpb.StatusPresenceEvent>.broadcast();
-  Stream<rtpb.StatusPresenceEvent> get onStatusPresence =>
-      _onStatusPresenceController.stream;
-
-  final _onStreamPresenceController =
-      StreamController<rtpb.StreamPresenceEvent>.broadcast();
-  Stream<rtpb.StreamPresenceEvent> get onStreamPresence =>
-      _onStreamPresenceController.stream;
-
-  final _onStreamDataController = StreamController<rtpb.StreamData>.broadcast();
-  Stream<rtpb.StreamData> get onStreamData => _onStreamDataController.stream;
-
-  final List<Completer> _futures = [];
+  final _onMatchDataController = StreamController<List<int>>.broadcast();
+  Stream<List<int>> get onMatchData => _onMatchDataController.stream;
 
   /// Returns the default instance.
   static NakamaWebsocketClient get instance {
@@ -76,9 +43,11 @@ class NakamaWebsocketClient {
   factory NakamaWebsocketClient.init({
     String key = 'default',
     required String host,
-    int port = 7350,
+    int port = 3000,
     required bool ssl,
-    required String token,
+    required String roomId,
+    required String processId,
+    required String sessionId,
     Function()? onDone,
     Function(dynamic error)? onError,
   }) {
@@ -91,8 +60,10 @@ class NakamaWebsocketClient {
     return _clients[key] = NakamaWebsocketClient._(
       host: host,
       port: port,
+      sessionId: sessionId,
+      roomId: roomId,
+      processId: processId,
       ssl: ssl,
-      token: token,
       onDone: onDone,
       onError: onError,
     );
@@ -100,30 +71,34 @@ class NakamaWebsocketClient {
 
   NakamaWebsocketClient._({
     required this.host,
-    this.port = 7350,
+    required this.sessionId,
+    required this.roomId,
+    required this.processId,
+    this.port = 3000,
     required this.ssl,
-    required this.token,
     this.onDone,
     this.onError,
   }) {
     print('Connecting ${ssl ? 'WSS' : 'WS'} to $host:$port');
-    print('Using token $token');
+    print('Using token $sessionId');
     final uri = Uri(
-      host: host,
-      port: port,
-      scheme: ssl ? 'wss' : 'ws',
-      path: '/ws',
+      host: "demo.piesocket.com",
+      // port: port,
+      scheme: 'wss',
+      path: '/v3/channel_1',
       queryParameters: {
-        'token': token,
-        'format': 'protobuf',
+        'api_key': 'VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV',
+        "notify_self": "true",
       },
     );
-    _channel = WebSocketChannel.connect(uri);
-    print('connected');
+    print(uri);
+    _channel = IOWebSocketChannel.connect(uri,
+        pingInterval: Duration(milliseconds: 500));
 
     _channel.stream.listen(
       _onData,
       onDone: () {
+        print("on DONE");
         _clients.clear();
 
         if (onDone != null) {
@@ -141,157 +116,69 @@ class NakamaWebsocketClient {
 
   Future<void> close() {
     return Future.wait([
-      _onChannelPresenceController.close(),
-      _onMatchmakerMatchedController.close(),
       _onMatchDataController.close(),
-      _onMatchPresenceController.close(),
-      _onNotificationsController.close(),
-      _onStatusPresenceController.close(),
-      _onStreamPresenceController.close(),
-      _onStreamDataController.close(),
-      _channel.sink.close(),
     ]);
   }
 
   void _onData(msg) {
+    print(msg);
+  }
+
+  Future<void> sendMatchData<S>(S data) async {
+    _channel.sink.add(data);
+  }
+}
+
+class NotificationController {
+  static final NotificationController _singleton =
+      NotificationController._internal();
+
+  StreamController<String> streamController =
+      StreamController.broadcast(sync: true);
+
+  String wsUrl = 'ws://YOUR_WEBSERVICE_URL';
+
+  late WebSocket channel;
+
+  factory NotificationController() {
+    return _singleton;
+  }
+
+  NotificationController._internal() {
+    initWebSocketConnection();
+  }
+
+  initWebSocketConnection() async {
+    print("conecting...");
+    channel = await connectWs();
+    print("socket connection initializied");
+    await channel.done.then((dynamic _) => _onDisconnected());
+    broadcastNotifications();
+  }
+
+  broadcastNotifications() {
+    channel.listen((streamData) {
+      streamController.add(streamData);
+    }, onDone: () {
+      print("conecting aborted");
+      initWebSocketConnection();
+    }, onError: (e) {
+      print('Server error: $e');
+      initWebSocketConnection();
+    });
+  }
+
+  connectWs() async {
     try {
-      final receivedEnvelope = rtpb.Envelope.fromBuffer(msg);
-
-      if (receivedEnvelope.cid.isNotEmpty) {
-        // get corresponding future to complete
-        final waitingFuture = _futures[int.parse(receivedEnvelope.cid)];
-
-        // ? Is there any chance to do this better with <T>?
-        if (waitingFuture is Completer<rtpb.Match>) {
-          return waitingFuture.complete(receivedEnvelope.match);
-        } else if (waitingFuture is Completer<rtpb.MatchmakerTicket>) {
-          return waitingFuture.complete(receivedEnvelope.matchmakerTicket);
-        } else if (waitingFuture is Completer<rtpb.Status>) {
-          return waitingFuture.complete(receivedEnvelope.status);
-        } else {
-          return waitingFuture.complete();
-        }
-      } else {
-        // map server messages
-        switch (receivedEnvelope.whichMessage()) {
-          case rtpb.Envelope_Message.channelPresenceEvent:
-            return _onChannelPresenceController
-                .add(receivedEnvelope.channelPresenceEvent);
-          case rtpb.Envelope_Message.matchmakerMatched:
-            return _onMatchmakerMatchedController
-                .add(receivedEnvelope.matchmakerMatched);
-          case rtpb.Envelope_Message.matchData:
-            return _onMatchDataController.add(receivedEnvelope.matchData);
-          case rtpb.Envelope_Message.matchPresenceEvent:
-            return _onMatchPresenceController.add(
-              receivedEnvelope.matchPresenceEvent,
-            );
-          case rtpb.Envelope_Message.notifications:
-            return _onNotificationsController.add(
-              receivedEnvelope.notifications,
-            );
-          case rtpb.Envelope_Message.statusPresenceEvent:
-            return _onStatusPresenceController.add(
-              receivedEnvelope.statusPresenceEvent,
-            );
-
-          case rtpb.Envelope_Message.streamPresenceEvent:
-            return _onStreamPresenceController.add(
-              receivedEnvelope.streamPresenceEvent,
-            );
-          case rtpb.Envelope_Message.streamData:
-            return _onStreamDataController.add(receivedEnvelope.streamData);
-          default:
-            return print('Not implemented');
-        }
-      }
-    } catch (e, s) {
-      print(e);
-      print(s);
+      return await WebSocket.connect(wsUrl);
+    } catch (e) {
+      print("Error! can not connect WS connectWs " + e.toString());
+      await Future.delayed(Duration(milliseconds: 10000));
+      return await connectWs();
     }
   }
 
-  Future<T> _send<T>(rtpb.Envelope envelope) {
-    final ticket = _createTicket<T>();
-    _channel.sink.add((envelope..cid = ticket.toString()).writeToBuffer());
-    return _futures[ticket].future as Future<T>;
+  void _onDisconnected() {
+    initWebSocketConnection();
   }
-
-  int _createTicket<T>() {
-    final completer = Completer<T>();
-    _futures.add(completer);
-    return _futures.length - 1;
-  }
-
-  Future updateStatus(String status) => _send<void>(rtpb.Envelope(
-      statusUpdate: rtpb.StatusUpdate(status: StringValue(value: status))));
-
-  Future<rtpb.Match> createMatch() =>
-      _send<rtpb.Match>(rtpb.Envelope(matchCreate: rtpb.MatchCreate()));
-
-  Future<rtpb.Match> joinMatch(
-    String matchId, {
-    String? token,
-  }) =>
-      _send<rtpb.Match>(rtpb.Envelope(
-          matchJoin: rtpb.MatchJoin(matchId: matchId, token: token)));
-
-  Future<void> leaveMatch(String matchId) =>
-      _send<void>(rtpb.Envelope(matchLeave: rtpb.MatchLeave(matchId: matchId)));
-
-  Future<rtpb.MatchmakerTicket> addMatchmaker({
-    required int minCount,
-    int? maxCount,
-    String? query,
-    Map<String, double>? numericProperties,
-    Map<String, String>? stringProperties,
-  }) {
-    assert(minCount >= 2);
-    assert(maxCount == null || maxCount >= minCount);
-
-    return _send(rtpb.Envelope(
-        matchmakerAdd: rtpb.MatchmakerAdd(
-      maxCount: maxCount,
-      minCount: minCount,
-      numericProperties: numericProperties,
-      stringProperties: stringProperties,
-      query: query,
-    )));
-  }
-
-  Future<void> removeMatchmaker(String ticket) => _send(
-      rtpb.Envelope(matchmakerRemove: rtpb.MatchmakerRemove(ticket: ticket)));
-
-  Future<Rpc> rpc({required String id, String? payload}) =>
-      _send(rtpb.Envelope(rpc: Rpc(id: id, payload: payload)));
-
-  Future<rtpb.Status> followUsers({
-    List<String>? userIds,
-    List<String>? usernames,
-  }) =>
-      _send(rtpb.Envelope(
-          statusFollow: rtpb.StatusFollow(
-        userIds: userIds,
-        usernames: usernames,
-      )));
-
-  Future<rtpb.Status> unfollowUsers({
-    List<String>? userIds,
-  }) =>
-      _send(rtpb.Envelope(
-          statusUnfollow: rtpb.StatusUnfollow(
-        userIds: userIds,
-      )));
-
-  Future<List<rtpb.UserPresence>> sendMatchData({
-    required String matchId,
-    required Int64 opCode,
-    required List<int> data,
-  }) =>
-      _send(rtpb.Envelope(
-          matchDataSend: rtpb.MatchDataSend(
-        matchId: matchId,
-        opCode: opCode,
-        data: data,
-      )));
 }

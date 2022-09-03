@@ -336,6 +336,7 @@ class ApiSessionColyseus$Data {
     this.expiresAt,
     this.refreshToken,
     this.refreshExpiresAt,
+    this.userUuid,
   });
 
   factory ApiSessionColyseus$Data.fromJson(Map<String, dynamic> json) =>
@@ -349,6 +350,8 @@ class ApiSessionColyseus$Data {
   final String? refreshToken;
   @JsonKey(name: 'refresh_expires_at', includeIfNull: true)
   final String? refreshExpiresAt;
+  @JsonKey(name: 'user_uuid', includeIfNull: true)
+  final String? userUuid;
   static const fromJsonFactory = _$ApiSessionColyseus$DataFromJson;
   static const toJsonFactory = _$ApiSessionColyseus$DataToJson;
   Map<String, dynamic> toJson() => _$ApiSessionColyseus$DataToJson(this);
@@ -367,7 +370,10 @@ class ApiSessionColyseus$Data {
                     .equals(other.refreshToken, refreshToken)) &&
             (identical(other.refreshExpiresAt, refreshExpiresAt) ||
                 const DeepCollectionEquality()
-                    .equals(other.refreshExpiresAt, refreshExpiresAt)));
+                    .equals(other.refreshExpiresAt, refreshExpiresAt)) &&
+            (identical(other.userUuid, userUuid) ||
+                const DeepCollectionEquality()
+                    .equals(other.userUuid, userUuid)));
   }
 }
 
@@ -376,12 +382,14 @@ extension $ApiSessionColyseus$DataExtension on ApiSessionColyseus$Data {
       {String? token,
       String? expiresAt,
       String? refreshToken,
-      String? refreshExpiresAt}) {
+      String? refreshExpiresAt,
+      String? userUuid}) {
     return ApiSessionColyseus$Data(
         token: token ?? this.token,
         expiresAt: expiresAt ?? this.expiresAt,
         refreshToken: refreshToken ?? this.refreshToken,
-        refreshExpiresAt: refreshExpiresAt ?? this.refreshExpiresAt);
+        refreshExpiresAt: refreshExpiresAt ?? this.refreshExpiresAt,
+        userUuid: userUuid ?? this.userUuid);
   }
 }
 

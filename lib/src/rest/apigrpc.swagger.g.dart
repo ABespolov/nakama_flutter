@@ -119,6 +119,7 @@ ApiSessionColyseus$Data _$ApiSessionColyseus$DataFromJson(
     expiresAt: json['expires_at'] as String?,
     refreshToken: json['refresh_token'] as String?,
     refreshExpiresAt: json['refresh_expires_at'] as String?,
+    userUuid: json['user_uuid'] as String?,
   );
 }
 
@@ -129,6 +130,7 @@ Map<String, dynamic> _$ApiSessionColyseus$DataToJson(
       'expires_at': instance.expiresAt,
       'refresh_token': instance.refreshToken,
       'refresh_expires_at': instance.refreshExpiresAt,
+      'user_uuid': instance.userUuid,
     };
 
 ApiJoinOrCreateMatch$Room _$ApiJoinOrCreateMatch$RoomFromJson(

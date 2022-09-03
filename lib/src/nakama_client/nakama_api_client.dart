@@ -23,7 +23,7 @@ class NakamaRestApiClient extends NakamaBaseClient {
 
   /// Temporarily holds the current valid session to use in the Chopper
   /// interceptor for JWT auth.
-  model.Session? _session;
+  model.Session? _session = null;
 
   /// Either inits and returns a new instance of [NakamaRestApiClient] or
   /// returns a already initialized one.
@@ -158,11 +158,15 @@ class NakamaRestApiClient extends NakamaBaseClient {
 
     final data = res.body!.data!;
 
-    return model.Session(
+    final newSession = model.Session(
         token: data.token!,
         expiresAt: data.expiresAt!,
         refreshToken: data.refreshToken!,
         refreshExpiresAt: data.refreshExpiresAt!);
+
+    _session = newSession;
+
+    return newSession;
   }
 
   @override

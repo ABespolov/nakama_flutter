@@ -205,6 +205,10 @@
             "refresh_expires_at": {
               "type": "string",
               "description": "Timestamp - refresh_token lifetime."
+            },
+            "user_uuid": {
+              "type": "string",
+              "description": "User uuid"
             }
           }
         }
